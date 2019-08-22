@@ -2,12 +2,15 @@
 % Please edit documentation in R/step_bbands.R
 \name{step_bbands}
 \alias{step_bbands}
+\alias{tidy.step_bbands}
 \title{Extract Bollinger Bands features}
 \usage{
-step_bbands(recipe, ..., ma = TTR::SMA, n = 20, sd_mult = 2,
+step_bbands(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
   prefix = "bbands", h = NULL, l = NULL, c = NULL,
   role = "predictor", trained = FALSE, skip = FALSE,
   id = rand_id("bbands"))
+
+\method{tidy}{step_bbands}(x, ...)
 }
 \arguments{
 \item{recipe}{A recipe object. The step will be added to the
@@ -16,7 +19,7 @@ sequence of operations for this recipe.}
 \item{...}{Three (unquoted) column names, which, respectively,
 representing the \code{"high"}, \code{"low"}, and \code{"close"} prices.}
 
-\item{ma}{A \code{function} to extract moving average elements, or a \code{character}
+\item{ma_fun}{A \code{function} to extract moving average elements, or a \code{character}
 vector of length one which specify a moving average function.
 Default to \link[TTR:SMA]{TTR::SMA}.}
 
@@ -54,6 +57,8 @@ Care should be taken when using \code{skip = TRUE} as it may affect
 the computations for subsequent operations}
 
 \item{id}{A character string that is unique to this step to identify it.}
+
+\item{x}{A \code{step_bbands} object.}
 }
 \value{
 An updated version of \code{recipe} with the new step
@@ -86,7 +91,7 @@ library(quantrecipes)
 
 # an example recipes using built-in data
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
-  step_bbands(high, low, close, ma = "SMA", n = 20, sd_mult = 2) \%>\%
+  step_bbands(high, low, close, ma_fun = TTR::SMA, n = 20, sd_mult = 2) \%>\%
   step_naomit(all_predictors()) \%>\%
   prep()
 

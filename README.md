@@ -32,7 +32,7 @@ Here’s an example for setting-up the quantitative recipe steps:
 ``` r
 # an example recipe
 rec <- recipe(. ~ ., data = btcusdt) %>% 
-  step_bbands(high, low, close, ma = "SMA", n = 20, sd_mult = 2) %>% 
+  step_bbands(high, low, close, ma_fun = TTR::SMA, n = 20, sd_mult = 2) %>% 
   step_naomit(all_predictors()) %>% 
   prep()
 

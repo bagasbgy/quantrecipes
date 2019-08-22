@@ -2,6 +2,8 @@
 
 S3method(bake,step_bbands)
 S3method(prep,step_bbands)
+S3method(print,step_bbands)
+S3method(tidy,step_bbands)
 export(step_bbands)
 import(TTR)
 import(dplyr)

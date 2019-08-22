@@ -10,7 +10,7 @@
 #'  sequence of operations for this recipe.
 #' @param ... Three (unquoted) column names, which, respectively,
 #'  representing the `"high"`, `"low"`, and `"close"` prices.
-#' @param ma A `function` to extract moving average elements, or a `character`
+#' @param ma_fun A `function` to extract moving average elements, or a `character`
 #'  vector of length one which specify a moving average function.
 #'  Default to [TTR::SMA].
 #' @param n A `numeric` vector of length one which specify
@@ -64,7 +64,7 @@
 #'
 #' # an example recipes using built-in data
 #' rec <- recipe(. ~ ., data = btcusdt) %>%
-#'   step_bbands(high, low, close, ma = "SMA", n = 20, sd_mult = 2) %>%
+#'   step_bbands(high, low, close, ma_fun = TTR::SMA, n = 20, sd_mult = 2) %>%
 #'   step_naomit(all_predictors()) %>%
 #'   prep()
 #'
@@ -73,7 +73,7 @@
 #'
 #' @export
 
-step_bbands <- function(recipe, ..., ma = TTR::SMA, n = 20, sd_mult = 2,
+step_bbands <- function(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
                         prefix = "bbands", h = NULL, l = NULL, c = NULL,
                         role = "predictor", trained = FALSE,
                         skip = FALSE, id = rand_id("bbands")) {
@@ -84,7 +84,7 @@ step_bbands <- function(recipe, ..., ma = TTR::SMA, n = 20, sd_mult = 2,
   # add new step
   add_step(recipe, step_bbands_new(
     terms = terms,
-    ma = ma,
+    ma_fun = ma_fun,
     n = n,
     sd_mult = sd_mult,
     prefix = prefix,
@@ -99,13 +99,13 @@ step_bbands <- function(recipe, ..., ma = TTR::SMA, n = 20, sd_mult = 2,
 
 }
 
-step_bbands_new <- function(terms, ma, n, sd_mult, prefix, h, l, c,
+step_bbands_new <- function(terms, ma_fun, n, sd_mult, prefix, h, l, c,
                             role, trained, skip, id) {
 
   # set-up step meta
   step("bbands",
     terms = terms,
-    ma = ma,
+    ma_fun = ma_fun,
     n = n,
     sd_mult = sd_mult,
     prefix = prefix,
@@ -117,6 +117,49 @@ step_bbands_new <- function(terms, ma, n, sd_mult, prefix, h, l, c,
     skip = skip,
     id = id
   )
+
+}
+
+# tidy and print interface ------------------------------------------------
+
+#' @rdname step_bbands
+#' @param x A `step_bbands` object.
+#' @export
+
+tidy.step_bbands <- function(x, ...) {
+
+  if (is_trained(x)) {
+
+    res <- tibble(
+      terms = c("high", "low", "close"),
+      value = c(x$h, x$l, x$c)
+    )
+
+  } else {
+
+    term_names <- sel2char(x$terms)
+
+    res <- tibble(
+      terms = c("high", "low", "close"),
+      value = na_chr
+    )
+
+  }
+
+  res$id <- x$id
+
+  res
+
+}
+
+#' @export
+
+print.step_bbands <- function(x, width = max(20, options()$width - 29), ...) {
+
+  cat("Extract Bollinger Bands features using: ", sep = "")
+  printer(c(x$h, x$l, x$c), x$terms, x$trained, width = width)
+
+  invisible(x)
 
 }
 
@@ -136,7 +179,7 @@ prep.step_bbands <- function(x, training, info = NULL, ...) {
   # prepare the step
   step_bbands_new(
     terms = x$terms,
-    ma = x$ma,
+    ma_fun = x$ma_fun,
     n = x$n,
     sd_mult = x$sd_mult,
     prefix = x$prefix,
@@ -164,7 +207,7 @@ bake.step_bbands <- function(object, new_data, ...) {
   # list all args
   args_list <- list(
     x = cbind(h, l, c),
-    maType = object$ma,
+    maType = object$ma_fun,
     n = object$n,
     sd = object$sd_mult,
     high = 1,
