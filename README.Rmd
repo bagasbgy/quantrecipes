@@ -1,0 +1,52 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  fig.path = "man/figures/README-",
+  fig.align = "center",
+  out.width = "100%",
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# quantrecipes
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- badges: end -->
+
+## Installation
+
+You can install the development version of `quantrecipes` using:
+
+```{r, eval=FALSE}
+# install.packages("remotes")
+remotes::install_github("bagasbgy/quantrecipes")
+```
+
+## Getting Started
+
+Let's start by importing the library:
+
+```{r}
+# import libs
+library(quantrecipes)
+```
+
+Here's an example for setting-up the quantitative recipe steps:
+
+```{r}
+# an example recipe
+rec <- recipe(. ~ ., data = btcusdt) %>% 
+  step_bbands(high, low, close, ma = "SMA", n = 20, sd_mult = 2) %>% 
+  step_naomit(all_predictors()) %>% 
+  prep()
+
+# quick check
+juice(rec)
+```

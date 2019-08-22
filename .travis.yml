@@ -1,0 +1,9 @@
+language: R
+cache: packages
+
+addons:
+  apt:
+    packages:
+      - git-core
+      - libcurl4-openssl-dev
+      - libssl-dev
