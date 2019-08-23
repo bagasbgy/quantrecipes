@@ -65,9 +65,15 @@ tidy(rec$steps[[1]])
 #> # A tibble: 3 x 3
 #>   terms value id          
 #>   <chr> <chr> <chr>       
+<<<<<<< HEAD
 #> 1 h     high  bbands_4LDem
 #> 2 l     low   bbands_4LDem
 #> 3 c     close bbands_4LDem
+=======
+#> 1 h     high  bbands_zefgp
+#> 2 l     low   bbands_zefgp
+#> 3 c     close bbands_zefgp
+>>>>>>> 7427ea8e47de6372fba9bc6aba1f16689cf5dc0d
 ```
 
 or even the used `"params"`:
@@ -77,5 +83,9 @@ tidy(rec$steps[[1]], info = "params")
 #> # A tibble: 1 x 8
 #>   ma_fun     n sd_mult ma_options state prev_state state_options   id      
 #>   <list> <dbl>   <dbl> <list>     <lgl> <lgl>      <list>          <chr>   
+<<<<<<< HEAD
 #> 1 <fn>      20       2 <list [0]> FALSE FALSE      <named list [4… bbands_…
+=======
+#> 1 <fn>      20       2 <list [0]> FALSE TRUE       <named list [4… bbands_…
+>>>>>>> 7427ea8e47de6372fba9bc6aba1f16689cf5dc0d
 ```
