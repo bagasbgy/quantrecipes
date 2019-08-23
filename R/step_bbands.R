@@ -193,7 +193,6 @@ step_bbands_new <- function(terms, ma_fun, n, sd_mult, ma_options,
 #' @export
 
 prep.step_bbands <- function(x, training, info = NULL, ...) {
-<<<<<<< HEAD
 
   # get selected columns
   col_names <- terms_select(x$terms, info = info)
@@ -229,7 +228,8 @@ prep.step_bbands <- function(x, training, info = NULL, ...) {
   if (x$state == FALSE) {
 
     x$prev_state <- FALSE
-=======
+
+  }
 
   # get selected columns
   col_names <- terms_select(x$terms, info = info)
@@ -258,7 +258,6 @@ prep.step_bbands <- function(x, training, info = NULL, ...) {
       "{paste(col_names, collapse = ', ')}. ",
       "Are you mistakenly enter wrong argument? Please refer to ?step_bbands"
     ))
->>>>>>> 7427ea8e47de6372fba9bc6aba1f16689cf5dc0d
 
   }
 
@@ -365,7 +364,6 @@ get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
     medhigh <- state_options[["medhigh"]]
     medlow <- state_options[["medlow"]]
     low <- state_options[["low"]]
-<<<<<<< HEAD
 
     results <- results %>%
       mutate(state = case_when(
@@ -403,45 +401,6 @@ get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
         fill(.data$prev_state, .direction = "down")
 
       results <- results %>%
-=======
-
-    results <- results %>%
-      mutate(state = case_when(
-        .data$pctb > high ~ "high",
-        between(.data$pctb, medhigh, high) ~ "medhigh",
-        between(.data$pctb, low, medlow) ~ "medlow",
-        .data$pctb < low ~ "low",
-        TRUE ~ "medium"
-      ))
-
-    last_na <- n - 1
-
-    results$state[1:last_na] <- NA
-
-    results <- results %>%
-      mutate(state_group = ifelse(.data$state != lag(.data$state), 1, 0)) %>%
-      mutate(state_group = c(rep(NA, last_na), 1, .data$state_group[-c(1:(last_na + 1))])) %>%
-      group_by(.data$state) %>%
-      mutate(state_group = cumsum(.data$state_group)) %>%
-      ungroup()
-
-    results <- results %>%
-      group_by(.data$state, .data$state_group) %>%
-      mutate(state_count = row_number()) %>%
-      ungroup() %>%
-      select(-.data$state_group)
-
-    results$state_count[1:last_na] <- NA
-
-    # record prev state
-    if (prev_state) {
-
-      results <- results %>%
-        mutate(prev_state = ifelse(.data$state != lag(.data$state), lag(.data$state), NA)) %>%
-        fill(.data$prev_state, .direction = "down")
-
-      results <- results %>%
->>>>>>> 7427ea8e47de6372fba9bc6aba1f16689cf5dc0d
         mutate(prev_medium = ifelse(.data$state %in% c("medium", "medlow", "medhigh"), .data$state, NA)) %>%
         fill(.data$prev_medium, .direction = "down")
 
