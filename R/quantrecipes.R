@@ -10,6 +10,7 @@
 #' @import tidyr
 #' @import TTR
 #' @importFrom glue glue
+#' @importFrom methods is
 #' @importFrom tibble tibble
 #' @importFrom tibble as_tibble
 

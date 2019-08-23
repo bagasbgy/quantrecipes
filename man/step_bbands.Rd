@@ -6,18 +6,22 @@
 \title{Extract Bollinger Bands features}
 \usage{
 step_bbands(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
-  prefix = "bbands", h = NULL, l = NULL, c = NULL,
+  ma_options = list(), state = FALSE, prev_state = TRUE,
+  state_options = list(high = 1, medhigh = 0.75, medlow = 0.25, low = 0),
+  prefix = "bbands", h = NULL, l = NULL, c = NULL, type = NULL,
   role = "predictor", trained = FALSE, skip = FALSE,
   id = rand_id("bbands"))
 
-\method{tidy}{step_bbands}(x, ...)
+\method{tidy}{step_bbands}(x, info = "terms", ...)
 }
 \arguments{
 \item{recipe}{A recipe object. The step will be added to the
 sequence of operations for this recipe.}
 
-\item{...}{Three (unquoted) column names, which, respectively,
-representing the \code{"high"}, \code{"low"}, and \code{"close"} prices.}
+\item{...}{Either three or one (unquoted) column name(s). If three columns
+are given, it will represent the \code{"high"}, \code{"low"}, and \code{"close"} prices,
+respectively. Otherwise, if only one column name is given, it will treated
+as \code{"close"} price.}
 
 \item{ma_fun}{A \code{function} to extract moving average elements, or a \code{character}
 vector of length one which specify a moving average function.
@@ -29,17 +33,34 @@ moving average window. The default is \code{20}.}
 \item{sd_mult}{A \code{numeric} vector of length one which specify
 standard deviation multiplier. The default is \code{2}.}
 
+\item{ma_options}{A \code{list} of additional argument(s) that would be passed
+to \code{ma_fun} function.}
+
+\item{state}{An option to specify whether to return
+the current states of the Bollinger Bands. Default to \code{TRUE}.}
+
+\item{prev_state}{An option to specify whether to return
+the summary of previous states. Default to \code{TRUE} and
+only works if \code{state = TRUE}.}
+
+\item{state_options}{A \code{list} of threshold that would be used
+as state determination. See details for further information.}
+
 \item{prefix}{A \code{character} vector of length one that would be used
 as a prefix to the created bollinger bands columns. Default to \code{"bbands"}.}
 
 \item{h}{A container for the names of \code{"high"}. Leave to \code{NULL}
-as it will populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
+as it will be populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
 
 \item{l}{A container for the names of \code{"low"}. Leave to \code{NULL}
-as it will populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
+as it will be populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
 
 \item{c}{A container for the names of \code{"close"}. Leave to \code{NULL}
-as it will populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
+as it will be populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
+
+\item{type}{A container for the final series type that
+would be used (\code{"hlc"} or \code{"c"}). Leave to \code{NULL} as it will be
+populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
 
 \item{role}{For model terms created by this step, what analysis
 role should they be assigned? By default, the function assumes
@@ -59,6 +80,9 @@ the computations for subsequent operations}
 \item{id}{A character string that is unique to this step to identify it.}
 
 \item{x}{A \code{step_bbands} object.}
+
+\item{info}{Options for \code{tidy()} method; whether to return tidied
+information for used \code{"terms"} or \code{"params"}}
 }
 \value{
 An updated version of \code{recipe} with the new step
@@ -71,17 +95,39 @@ from an asset price historical data.
 }
 \details{
 The output from this step are several new column
-which contains the extracted Bollinger Bands features:
+which contains the extracted Bollinger Bands features.
+
+For basic output, this step will produces:
 \itemize{
-\item \code{dn}
-\item \code{ma}
-\item \code{up}
-\item \code{pctb}
-\item \code{state}
-\item \code{state_count}
-\item \code{prev_state}
-\item \code{prev_range}
-\item \code{prev_break}
+\item \code{dn}: lower band
+\item \code{ma}: moving average
+\item \code{up}: upper band
+\item \code{pctb}: calculated %B
+}
+
+If \code{state} argument is \code{TRUE}, it will also produces:
+\itemize{
+\item \code{state}: current %B state
+\item \code{state_count}: cumulative count in current state
+}
+
+These states are determined using four different threshold, which listed
+in \code{state_options} arguments. These are the default threshold values:
+\itemize{
+\item \code{high}: \code{pctb > high} (the default is \code{high = 1})
+\item \code{medhigh}: \code{high > pctb > medhigh} (the default is \code{medhigh = 0.75})
+\item \code{medlow}: \code{low < pctb < medlow} (the default is \code{medlow = 0.25})
+\item \code{low}: \code{pctb < low} (the default is \code{low = 0})
+}
+
+Note that the rest values would be categorized as \code{"medium"}.
+
+Additionally, if \code{prev_state} argument is \code{TRUE}, it will also provides
+some summary regarding previous Bollinger Bands states:
+\itemize{
+\item \code{prev_state}: previous state
+\item \code{prev_medium}: previous medium-state
+\item \code{prev_break}: previous break-state
 }
 }
 \examples{
@@ -91,7 +137,25 @@ library(quantrecipes)
 
 # an example recipes using built-in data
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
-  step_bbands(high, low, close, ma_fun = TTR::SMA, n = 20, sd_mult = 2) \%>\%
+  step_bbands(high, low, close,
+    ma_fun = TTR::SMA,
+    n = 20,
+    sd_mult = 2
+  ) \%>\%
+  step_naomit(all_predictors()) \%>\%
+  prep()
+
+# get preprocessed data
+juice(rec)
+
+# using state argument
+rec <- recipe(. ~ ., data = btcusdt) \%>\%
+  step_bbands(high, low, close,
+    ma_fun = TTR::SMA,
+    n = 20,
+    sd_mult = 2,
+    state = TRUE
+  ) \%>\%
   step_naomit(all_predictors()) \%>\%
   prep()
 
