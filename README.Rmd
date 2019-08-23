@@ -39,15 +39,28 @@ Let's start by importing the library:
 library(quantrecipes)
 ```
 
-Here's an example for setting-up the quantitative recipe steps:
+Here's a quick example for setting-up a recipe to produce Bollinger Bands:
 
 ```{r}
 # an example recipe
 rec <- recipe(. ~ ., data = btcusdt) %>% 
-  step_bbands(high, low, close, ma_fun = TTR::SMA, n = 20, sd_mult = 2) %>% 
+  step_bbands(high, low, close) %>% 
   step_naomit(all_predictors()) %>% 
   prep()
 
 # quick check
 juice(rec)
+```
+
+Each steps also have `tidy()` methods if you need information regardings the selected `"terms"`:
+
+```{r}
+# steps[[1]] is our step_bbands
+tidy(rec$steps[[1]])
+```
+
+or even the used `"params"`:
+
+```{r}
+tidy(rec$steps[[1]], info = "params")
 ```
