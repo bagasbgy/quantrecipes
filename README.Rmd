@@ -39,12 +39,13 @@ Let's start by importing the library:
 library(quantrecipes)
 ```
 
-Here's a quick example for setting-up a recipe to produce Bollinger Bands:
+Here's a quick example for setting-up a recipe to produce Bollinger Bands and moving average:
 
 ```{r}
 # an example recipe
 rec <- recipe(. ~ ., data = btcusdt) %>% 
   step_bbands(high, low, close) %>% 
+  step_ma(close) %>% 
   step_naomit(all_predictors()) %>% 
   prep()
 
@@ -57,10 +58,14 @@ Each steps also have `tidy()` methods if you need information regardings the sel
 ```{r}
 # steps[[1]] is our step_bbands
 tidy(rec$steps[[1]])
+
+# and steps[[2]] is our step_ma
+tidy(rec$steps[[2]])
 ```
 
 or even the used `"params"`:
 
 ```{r}
 tidy(rec$steps[[1]], info = "params")
+tidy(rec$steps[[2]], info = "params")
 ```

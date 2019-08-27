@@ -6,7 +6,7 @@
 \title{Extract Bollinger Bands features}
 \usage{
 step_bbands(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
-  ma_options = list(), state = FALSE, prev_state = TRUE,
+  ma_options = list(), state = FALSE, previous = TRUE,
   state_options = list(high = 1, medhigh = 0.75, medlow = 0.25, low = 0),
   prefix = "bbands", h = NULL, l = NULL, c = NULL, type = NULL,
   role = "predictor", trained = FALSE, skip = FALSE,
@@ -23,12 +23,12 @@ are given, it will represent the \code{"high"}, \code{"low"}, and \code{"close"}
 respectively. Otherwise, if only one column name is given, it will treated
 as \code{"close"} price.}
 
-\item{ma_fun}{A \code{function} to extract moving average elements, or a \code{character}
+\item{ma_fun}{A \code{function} to extract moving average, or a \code{character}
 vector of length one which specify a moving average function.
-Default to \link[TTR:SMA]{TTR::SMA}.}
+Defaults to \link[TTR:SMA]{TTR::SMA}.}
 
 \item{n}{A \code{numeric} vector of length one which specify
-moving average window. The default is \code{20}.}
+the moving average window. The default is \code{20}.}
 
 \item{sd_mult}{A \code{numeric} vector of length one which specify
 standard deviation multiplier. The default is \code{2}.}
@@ -37,45 +37,45 @@ standard deviation multiplier. The default is \code{2}.}
 to \code{ma_fun} function.}
 
 \item{state}{An option to specify whether to return
-the current states of the Bollinger Bands. Default to \code{TRUE}.}
+the current states of the Bollinger Bands. Defaults to \code{TRUE}.}
 
-\item{prev_state}{An option to specify whether to return
-the summary of previous states. Default to \code{TRUE} and
+\item{previous}{An option to specify whether to return
+the summary of previous states. Defaults to \code{TRUE} and
 only works if \code{state = TRUE}.}
 
 \item{state_options}{A \code{list} of threshold that would be used
 as state determination. See details for further information.}
 
 \item{prefix}{A \code{character} vector of length one that would be used
-as a prefix to the created bollinger bands columns. Default to \code{"bbands"}.}
+as a prefix to the created bollinger bands columns. Defaults to \code{"bbands"}.}
 
 \item{h}{A container for the names of \code{"high"}. Leave to \code{NULL}
-as it will be populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
+as it will be populated by \link[recipes:prep.recipe]{prep()} function.}
 
 \item{l}{A container for the names of \code{"low"}. Leave to \code{NULL}
-as it will be populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
+as it will be populated by \link[recipes:prep.recipe]{prep()} function.}
 
 \item{c}{A container for the names of \code{"close"}. Leave to \code{NULL}
-as it will be populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
+as it will be populated by \link[recipes:prep.recipe]{prep()} function.}
 
 \item{type}{A container for the final series type that
 would be used (\code{"hlc"} or \code{"c"}). Leave to \code{NULL} as it will be
-populated by \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} function.}
+populated by \link[recipes:prep.recipe]{prep()} function.}
 
 \item{role}{For model terms created by this step, what analysis
 role should they be assigned? By default, the function assumes
 that the created bollinger bands columns will be used
-as predictors in a model.}
+as \code{"predictors"} in a model.}
 
 \item{trained}{A logical to indicate if the necessary informations for
 preprocessing have been estimated.}
 
 \item{skip}{A logical. Should the step be skipped when the
-recipe is baked by \code{\link[recipes:bake.recipe]{recipes::bake.recipe()}}? While all operations are baked
-when \code{\link[recipes:prep.recipe]{recipes::prep.recipe()}} is run, some operations may not be able to be
-conducted on new data (e.g. processing the outcome variable(s)).
-Care should be taken when using \code{skip = TRUE} as it may affect
-the computations for subsequent operations}
+recipe is baked by \link[recipes:bake.recipe]{bake()}? While all operations are baked
+when \link[recipes:prep.recipe]{prep()} is run, some operations may not
+be able to be conducted on new data (e.g. processing
+the outcome variable(s)). Care should be taken when using \code{skip = TRUE}
+as it may affect the computations for subsequent operations}
 
 \item{id}{A character string that is unique to this step to identify it.}
 
@@ -94,7 +94,7 @@ step that will extract \strong{Bollinger Bands} features
 from an asset price historical data.
 }
 \details{
-The output from this step are several new column
+The output from this step are several new columns
 which contains the extracted Bollinger Bands features.
 
 For basic output, this step will produces:
@@ -122,7 +122,7 @@ in \code{state_options} arguments. These are the default threshold values:
 
 Note that the rest values would be categorized as \code{"medium"}.
 
-Additionally, if \code{prev_state} argument is \code{TRUE}, it will also provides
+Additionally, if \code{previous} argument is \code{TRUE}, it will also provides
 some summary regarding previous Bollinger Bands states:
 \itemize{
 \item \code{prev_state}: previous state

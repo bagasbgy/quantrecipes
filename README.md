@@ -28,18 +28,19 @@ library(quantrecipes)
 ```
 
 Here’s a quick example for setting-up a recipe to produce Bollinger
-Bands:
+Bands and moving average:
 
 ``` r
 # an example recipe
 rec <- recipe(. ~ ., data = btcusdt) %>% 
   step_bbands(high, low, close) %>% 
+  step_ma(close) %>% 
   step_naomit(all_predictors()) %>% 
   prep()
 
 # quick check
 juice(rec)
-#> # A tibble: 26,172 x 11
+#> # A tibble: 26,172 x 12
 #>    datetime             open  high   low close volume turnover bbands_dn
 #>    <dttm>              <dbl> <dbl> <dbl> <dbl>  <dbl>    <dbl>     <dbl>
 #>  1 2019-05-01 01:35:00 5340. 5340. 5331. 5331. 0.510     2722.     5322.
@@ -52,8 +53,8 @@ juice(rec)
 #>  8 2019-05-01 02:10:00 5353  5355. 5348. 5348. 0.191     1020.     5328.
 #>  9 2019-05-01 02:15:00 5349. 5369. 5348. 5362. 0.310     1661.     5326.
 #> 10 2019-05-01 02:20:00 5361. 5362. 5355. 5355. 0.356     1908.     5325.
-#> # … with 26,162 more rows, and 3 more variables: bbands_ma <dbl>,
-#> #   bbands_up <dbl>, bbands_pctb <dbl>
+#> # … with 26,162 more rows, and 4 more variables: bbands_ma <dbl>,
+#> #   bbands_up <dbl>, bbands_pctb <dbl>, ma_close_value <dbl>
 ```
 
 Each steps also have `tidy()` methods if you need information regardings
@@ -65,9 +66,16 @@ tidy(rec$steps[[1]])
 #> # A tibble: 3 x 3
 #>   terms value id          
 #>   <chr> <chr> <chr>       
-#> 1 h     high  bbands_YroXW
-#> 2 l     low   bbands_YroXW
-#> 3 c     close bbands_YroXW
+#> 1 h     high  bbands_k52GL
+#> 2 l     low   bbands_k52GL
+#> 3 c     close bbands_k52GL
+
+# and steps[[2]] is our step_ma
+tidy(rec$steps[[2]])
+#> # A tibble: 1 x 2
+#>   prices id      
+#>   <chr>  <chr>   
+#> 1 close  ma_GNEYa
 ```
 
 or even the used `"params"`:
@@ -75,7 +83,12 @@ or even the used `"params"`:
 ``` r
 tidy(rec$steps[[1]], info = "params")
 #> # A tibble: 1 x 8
-#>   ma_fun     n sd_mult ma_options state prev_state state_options   id      
-#>   <list> <dbl>   <dbl> <list>     <lgl> <lgl>      <list>          <chr>   
-#> 1 <fn>      20       2 <list [0]> FALSE FALSE      <named list [4… bbands_…
+#>   ma_fun     n sd_mult ma_options state previous state_options    id       
+#>   <list> <dbl>   <dbl> <list>     <lgl> <lgl>    <list>           <chr>    
+#> 1 <fn>      20       2 <list [0]> FALSE FALSE    <named list [4]> bbands_k…
+tidy(rec$steps[[2]], info = "params")
+#> # A tibble: 1 x 7
+#>   weights ma_fun     n ma_options state ratio id      
+#>   <lgl>   <list> <dbl> <list>     <lgl> <lgl> <chr>   
+#> 1 NA      <fn>      10 <list [0]> FALSE FALSE ma_GNEYa
 ```

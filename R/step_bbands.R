@@ -6,61 +6,48 @@
 #'  step that will extract **Bollinger Bands** features
 #'  from an asset price historical data.
 #'
+#' @inheritParams step_ma
+#'
 #' @param recipe A recipe object. The step will be added to the
 #'  sequence of operations for this recipe.
 #' @param ... Either three or one (unquoted) column name(s). If three columns
 #'  are given, it will represent the `"high"`, `"low"`, and `"close"` prices,
 #'  respectively. Otherwise, if only one column name is given, it will treated
 #'  as `"close"` price.
-#' @param ma_fun A `function` to extract moving average elements, or a `character`
-#'  vector of length one which specify a moving average function.
-#'  Default to [TTR::SMA].
 #' @param n A `numeric` vector of length one which specify
-#'  moving average window. The default is `20`.
+#'  the moving average window. The default is `20`.
 #' @param sd_mult A `numeric` vector of length one which specify
 #'  standard deviation multiplier. The default is `2`.
-#' @param ma_options A `list` of additional argument(s) that would be passed
-#'  to `ma_fun` function.
 #' @param state An option to specify whether to return
-#'  the current states of the Bollinger Bands. Default to `TRUE`.
-#' @param prev_state An option to specify whether to return
-#'  the summary of previous states. Default to `TRUE` and
+#'  the current states of the Bollinger Bands. Defaults to `TRUE`.
+#' @param previous An option to specify whether to return
+#'  the summary of previous states. Defaults to `TRUE` and
 #'  only works if `state = TRUE`.
 #' @param state_options A `list` of threshold that would be used
 #'  as state determination. See details for further information.
 #' @param h A container for the names of `"high"`. Leave to `NULL`
-#'  as it will be populated by [recipes::prep.recipe()] function.
+#'  as it will be populated by [prep()][recipes::prep.recipe] function.
 #' @param l A container for the names of `"low"`. Leave to `NULL`
-#'  as it will be populated by [recipes::prep.recipe()] function.
+#'  as it will be populated by [prep()][recipes::prep.recipe] function.
 #' @param c A container for the names of `"close"`. Leave to `NULL`
-#'  as it will be populated by [recipes::prep.recipe()] function.
+#'  as it will be populated by [prep()][recipes::prep.recipe] function.
 #' @param type A container for the final series type that
 #'  would be used (`"hlc"` or `"c"`). Leave to `NULL` as it will be
-#'  populated by [recipes::prep.recipe()] function.
+#'  populated by [prep()][recipes::prep.recipe] function.
 #' @param prefix A `character` vector of length one that would be used
-#'  as a prefix to the created bollinger bands columns. Default to `"bbands"`.
+#'  as a prefix to the created bollinger bands columns. Defaults to `"bbands"`.
 #' @param role For model terms created by this step, what analysis
 #'  role should they be assigned? By default, the function assumes
 #'  that the created bollinger bands columns will be used
-#'  as predictors in a model.
+#'  as `"predictors"` in a model.
 #' @param trained A logical to indicate if the necessary informations for
 #'  preprocessing have been estimated.
-#' @param skip A logical. Should the step be skipped when the
-#'  recipe is baked by [recipes::bake.recipe()]? While all operations are baked
-#'  when [recipes::prep.recipe()] is run, some operations may not be able to be
-#'  conducted on new data (e.g. processing the outcome variable(s)).
-#'  Care should be taken when using `skip = TRUE` as it may affect
-#'  the computations for subsequent operations
-#' @param id A character string that is unique to this step to identify it.
-#' @param info Options for `tidy()` method; whether to return tidied
-#'  information for used `"terms"` or `"params"`
 #'
-#' @return An updated version of `recipe` with the new step
-#'  added to the sequence of existing steps (if any).
+#' @inherit step_ma return
 #'
 #' @details
 #'
-#'  The output from this step are several new column
+#'  The output from this step are several new columns
 #'  which contains the extracted Bollinger Bands features.
 #'
 #'  For basic output, this step will produces:
@@ -85,7 +72,7 @@
 #'
 #'  Note that the rest values would be categorized as `"medium"`.
 #'
-#'  Additionally, if `prev_state` argument is `TRUE`, it will also provides
+#'  Additionally, if `previous` argument is `TRUE`, it will also provides
 #'  some summary regarding previous Bollinger Bands states:
 #'
 #'  * `prev_state`: previous state
@@ -127,7 +114,7 @@
 #' @export
 
 step_bbands <- function(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
-                        ma_options = list(), state = FALSE, prev_state = TRUE,
+                        ma_options = list(), state = FALSE, previous = TRUE,
                         state_options = list(high = 1, medhigh = 0.75,
                                              medlow = 0.25, low = 0),
                         prefix = "bbands", h = NULL, l = NULL, c = NULL,
@@ -145,7 +132,7 @@ step_bbands <- function(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
     sd_mult = sd_mult,
     ma_options = ma_options,
     state = state,
-    prev_state = prev_state,
+    previous = previous,
     state_options = state_options,
     prefix = prefix,
     h = h,
@@ -161,7 +148,7 @@ step_bbands <- function(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
 }
 
 step_bbands_new <- function(terms, ma_fun, n, sd_mult, ma_options,
-                            state, prev_state, state_options,
+                            state, previous, state_options,
                             prefix, h, l, c, type,
                             role, trained, skip, id) {
 
@@ -173,7 +160,7 @@ step_bbands_new <- function(terms, ma_fun, n, sd_mult, ma_options,
     sd_mult = sd_mult,
     ma_options = ma_options,
     state = state,
-    prev_state = prev_state,
+    previous = previous,
     state_options = state_options,
     prefix = prefix,
     h = h,
@@ -227,37 +214,7 @@ prep.step_bbands <- function(x, training, info = NULL, ...) {
   # check state options
   if (x$state == FALSE) {
 
-    x$prev_state <- FALSE
-
-  }
-
-  # get selected columns
-  col_names <- terms_select(x$terms, info = info)
-
-  # resolve selected columns
-  if (length(col_names) == 3) {
-
-    x$h <- col_names[1]
-    x$l <- col_names[2]
-    x$c <- col_names[3]
-
-    x$type <- "hlc"
-
-  } else if (length(col_names) == 1) {
-
-    x$h <- NA
-    x$l <- NA
-    x$c <- col_names[1]
-
-    x$type <- "c"
-
-  } else {
-
-    stop(glue(
-      "Invalid columns; please check the selected column(s): ",
-      "{paste(col_names, collapse = ', ')}. ",
-      "Are you mistakenly enter wrong argument? Please refer to ?step_bbands"
-    ))
+    x$previous <- FALSE
 
   }
 
@@ -269,7 +226,7 @@ prep.step_bbands <- function(x, training, info = NULL, ...) {
     sd_mult = x$sd_mult,
     ma_options = x$ma_options,
     state = x$state,
-    prev_state = x$prev_state,
+    previous = x$previous,
     state_options = x$state_options,
     prefix = x$prefix,
     h = x$h,
@@ -312,7 +269,7 @@ bake.step_bbands <- function(object, new_data, ...) {
     sd_mult = object$sd_mult,
     ma_options = object$ma_options,
     state = object$state,
-    prev_state = object$prev_state,
+    previous = object$previous,
     state_options = object$state_options
   )
 
@@ -338,7 +295,7 @@ bake.step_bbands <- function(object, new_data, ...) {
 
 # bbands feature extractor
 get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
-                       state, prev_state, state_options) {
+                       state, previous, state_options) {
 
   # list all args
   args_list <- list(
@@ -353,6 +310,7 @@ get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
   # calculate bbands base features
   results <- exec(BBands, !!!args_list)
 
+  # convert as tibble
   results <- as_tibble(results)
 
   colnames(results) <- c("dn", "ma", "up", "pctb")
@@ -394,7 +352,7 @@ get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
     results$state_count[1:last_na] <- NA
 
     # record prev state
-    if (prev_state) {
+    if (previous) {
 
       results <- results %>%
         mutate(prev_state = ifelse(.data$state != lag(.data$state), lag(.data$state), NA)) %>%
@@ -421,6 +379,8 @@ get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
 
 #' @rdname step_bbands
 #' @param x A `step_bbands` object.
+#' @param info Options for `tidy()` method; whether to return tidied
+#'  information for used `"terms"` or `"params"`
 #' @export
 
 tidy.step_bbands <- function(x, info = "terms", ...) {
@@ -459,7 +419,7 @@ tidy.step_bbands <- function(x, info = "terms", ...) {
       sd_mult = x$sd_mult,
       ma_options = list(x$ma_options),
       state = x$state,
-      prev_state = x$prev_state,
+      previous = x$previous,
       state_options = list(x$state_options),
     )
 

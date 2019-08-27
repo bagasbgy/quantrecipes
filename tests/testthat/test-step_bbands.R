@@ -1,7 +1,7 @@
 # test basic output
 output0 <- recipe(. ~ ., data = btcusdt) %>%
   step_bbands(high, low, close) %>%
-  step_rm(-matches("bbands")) %>%
+  step_rm(-matches("bbands_")) %>%
   step_naomit(all_predictors()) %>%
   prep() %>%
   juice()
@@ -15,8 +15,8 @@ test_that("step_bbands basic output returned expected number of columns and rows
 
 # test state output
 output1 <- recipe(. ~ ., data = btcusdt) %>%
-  step_bbands(high, low, close, state = TRUE, prev_state = TRUE) %>%
-  step_rm(-matches("bbands")) %>%
+  step_bbands(high, low, close, state = TRUE, previous = TRUE) %>%
+  step_rm(-matches("bbands_")) %>%
   step_naomit(all_predictors()) %>%
   prep() %>%
   juice()
@@ -34,7 +34,7 @@ outputA <- recipe(. ~ ., data = btcusdt) %>%
     ma_fun = "EMA",
     ma_options = list(wilder = TRUE)
   ) %>%
-  step_rm(-matches("bbands")) %>%
+  step_rm(-matches("bbands_")) %>%
   step_naomit(all_predictors()) %>%
   prep() %>%
   juice()
@@ -44,7 +44,7 @@ outputB <- recipe(. ~ ., data = btcusdt) %>%
     ma_fun = "EMA",
     ma_options = list(wilder = FALSE)
   ) %>%
-  step_rm(-matches("bbands")) %>%
+  step_rm(-matches("bbands_")) %>%
   step_naomit(all_predictors()) %>%
   prep() %>%
   juice()
@@ -54,9 +54,9 @@ outputC <- recipe(. ~ ., data = btcusdt) %>%
     ma_fun = "EMA",
     ma_options = list(wilder = FALSE),
     state = TRUE,
-    prev_state = TRUE
+    previous = TRUE
   ) %>%
-  step_rm(-matches("bbands")) %>%
+  step_rm(-matches("bbands_")) %>%
   step_naomit(all_predictors()) %>%
   prep() %>%
   juice()
@@ -66,7 +66,7 @@ outputD <- recipe(. ~ ., data = btcusdt) %>%
     ma_fun = "EMA",
     ma_options = list(wilder = FALSE),
     state = TRUE,
-    prev_state = TRUE,
+    previous = TRUE,
     state_options = list(
       high = 0.9,
       medhigh = 0.6,
@@ -74,7 +74,7 @@ outputD <- recipe(. ~ ., data = btcusdt) %>%
       low = 0.1
     )
   ) %>%
-  step_rm(-matches("bbands")) %>%
+  step_rm(-matches("bbands_")) %>%
   step_naomit(all_predictors()) %>%
   prep() %>%
   juice()
@@ -89,13 +89,13 @@ test_that("step_bbands handle options passing as expected", {
 # test tidying recipes meta
 rec <- recipe(. ~ ., data = btcusdt) %>%
   step_bbands(high, low, close) %>%
-  step_rm(-matches("bbands")) %>%
+  step_rm(-matches("bbands_")) %>%
   step_naomit(all_predictors()) %>%
   prep()
 
-test_that("tidying step_bbands meta produces any error", {
+test_that("tidying step_bbands meta doesn't produces any error", {
 
   expect_silent(tidy(rec$steps[[1]]))
-  expect_silent(tidy(rec$steps[[1]]))
+  expect_silent(tidy(rec$steps[[1]], info = "params"))
 
 })
