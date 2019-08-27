@@ -11,7 +11,7 @@ Authors@R:
 Description: A set of data preprocess recipes for quantitative analysis.
   This package shipped some custom steps to produces several quantitative
   analysis information, such as Bollinger Bands, Moving Averages, etc.
-URL: https://quantrecipes.bagasbgy.com/
+URL: https://github.com/bagasbgy/quantrecipes
 BugReports: https://github.com/bagasbgy/quantrecipes/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
