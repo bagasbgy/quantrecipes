@@ -5,7 +5,7 @@
 \alias{tidy.step_ma}
 \title{Extract moving average features}
 \usage{
-step_ma(recipe, ..., weights = NULL, ma_fun = TTR::SMA, n = 10,
+step_ma(recipe, ..., ma_fun = TTR::SMA, n = 10, weights = NULL,
   ma_options = list(), state = FALSE, ratio = TRUE, prefix = "ma",
   prices = NULL, role = "predictor", trained = FALSE, skip = FALSE,
   id = rand_id("ma"))
@@ -20,16 +20,16 @@ sequence of operations for this recipe.}
 variables are affected by the step. See
 \link[recipes:selections]{selections (from recipes package)} for more details.}
 
-\item{weights}{A \code{character} vector of length one that specify a column name,
-or a \code{numeric} vector for \code{ma_fun} that has \code{wts} or \code{volume} argument.
-See details for more information.}
-
 \item{ma_fun}{A \code{function} to extract moving average, or a \code{character}
 vector of length one which specify a moving average function.
 Defaults to \link[TTR:SMA]{TTR::SMA}.}
 
 \item{n}{A \code{numeric} vector of length one which specify
 the moving average window. The default is \code{10}.}
+
+\item{weights}{A \code{character} vector of length one that specify a column name,
+or a \code{numeric} vector for \code{ma_fun} that has \code{wts} or \code{volume} argument.
+See details for more information.}
 
 \item{ma_options}{A \code{list} of additional argument(s) that would be passed
 to \code{ma_fun} function.}
@@ -136,9 +136,9 @@ juice(rec)
 # using volume based moving average
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
   step_ma(close,
-    weights = "volume",
     ma_fun = TTR::VWMA,
     n = 10,
+    weights = "volume",
     state = TRUE
   ) \%>\%
   step_naomit(all_predictors()) \%>\%

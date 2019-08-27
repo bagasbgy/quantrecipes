@@ -11,14 +11,14 @@
 #' @param ... One or more selector functions to choose which
 #'  variables are affected by the step. See
 #'  [selections (from recipes package)][recipes::selections] for more details.
-#' @param weights A `character` vector of length one that specify a column name,
-#'  or a `numeric` vector for `ma_fun` that has `wts` or `volume` argument.
-#'  See details for more information.
 #' @param ma_fun A `function` to extract moving average, or a `character`
 #'  vector of length one which specify a moving average function.
 #'  Defaults to [TTR::SMA].
 #' @param n A `numeric` vector of length one which specify
 #'  the moving average window. The default is `10`.
+#' @param weights A `character` vector of length one that specify a column name,
+#'  or a `numeric` vector for `ma_fun` that has `wts` or `volume` argument.
+#'  See details for more information.
 #' @param ma_options A `list` of additional argument(s) that would be passed
 #'  to `ma_fun` function.
 #' @param state An option to specify whether to return
@@ -104,9 +104,9 @@
 #' # using volume based moving average
 #' rec <- recipe(. ~ ., data = btcusdt) %>%
 #'   step_ma(close,
-#'     weights = "volume",
 #'     ma_fun = TTR::VWMA,
 #'     n = 10,
+#'     weights = "volume",
 #'     state = TRUE
 #'   ) %>%
 #'   step_naomit(all_predictors()) %>%
@@ -117,7 +117,7 @@
 #'
 #' @export
 
-step_ma <- function(recipe, ..., weights = NULL, ma_fun = TTR::SMA, n = 10,
+step_ma <- function(recipe, ..., ma_fun = TTR::SMA, n = 10, weights = NULL,
                     ma_options = list(), state = FALSE, ratio = TRUE,
                     prefix = "ma", prices = NULL,
                     role = "predictor", trained = FALSE,
@@ -129,9 +129,9 @@ step_ma <- function(recipe, ..., weights = NULL, ma_fun = TTR::SMA, n = 10,
   # add new step
   add_step(recipe, step_ma_new(
     terms = terms,
-    weights = weights,
     ma_fun = ma_fun,
     n = n,
+    weights = weights,
     ma_options = ma_options,
     state = state,
     ratio = ratio,
@@ -145,15 +145,15 @@ step_ma <- function(recipe, ..., weights = NULL, ma_fun = TTR::SMA, n = 10,
 
 }
 
-step_ma_new <- function(terms, weights, ma_fun, n, ma_options, state, ratio,
+step_ma_new <- function(terms, ma_fun, n, weights, ma_options, state, ratio,
                         prefix, prices, role, trained, skip, id) {
 
   # set-up step meta
   step("ma",
     terms = terms,
-    weights = weights,
     ma_fun = ma_fun,
     n = n,
+    weights = weights,
     ma_options = ma_options,
     state = state,
     ratio = ratio,
@@ -186,18 +186,12 @@ prep.step_ma <- function(x, training, info = NULL, ...) {
 
   }
 
-  if (is.null(x$weights)) {
-
-    x$weights <- NA
-
-  }
-
   # prepare the step
   step_ma_new(
     terms = x$terms,
-    weights = x$weights,
     ma_fun = x$ma_fun,
     n = x$n,
+    weights = x$weights,
     ma_options = x$ma_options,
     state = x$state,
     ratio = x$ratio,
@@ -225,7 +219,7 @@ bake.step_ma <- function(object, new_data, ...) {
     # get selected terms as vectors
     price <- getElement(new_data, i)
 
-    if (!is.na(object$weights)) {
+    if (!is.null(object$weights)) {
 
       if (is.character(object$weights)) {
 
@@ -246,9 +240,9 @@ bake.step_ma <- function(object, new_data, ...) {
     # list all args
     args_list <- list(
       price = price,
-      weights = weights,
       ma_fun = object$ma_fun,
       n = object$n,
+      weights = weights,
       ma_options = object$ma_options,
       state = object$state,
       ratio = object$ratio
@@ -280,7 +274,7 @@ bake.step_ma <- function(object, new_data, ...) {
 # input-output resolver ---------------------------------------------------
 
 # ma feature extractor
-get_ma <- function(price, weights, ma_fun, n, ma_options, state, ratio) {
+get_ma <- function(price, ma_fun, n, weights, ma_options, state, ratio) {
 
   # list all args
   if ("price" %in% names(formals(ma_fun))) {
@@ -299,7 +293,7 @@ get_ma <- function(price, weights, ma_fun, n, ma_options, state, ratio) {
 
   }
 
-  if (!is.na(weights)) {
+  if (!is.null(weights)) {
 
     if ("wts" %in% names(formals(ma_fun))) {
 
@@ -383,10 +377,20 @@ tidy.step_ma <- function(x, info = "terms", ...) {
 
     }
 
+    if (is.null(x$weights)) {
+
+      x$weights <- NA
+
+    } else if (is.numeric(x$weights)) {
+
+      x$weights <- list(x$weights)
+
+    }
+
     results <- tibble(
-      weights = x$weights,
       ma_fun = list(x$ma_fun),
       n = x$n,
+      weights = x$weights,
       ma_options = list(x$ma_options),
       state = x$state,
       ratio = x$ratio

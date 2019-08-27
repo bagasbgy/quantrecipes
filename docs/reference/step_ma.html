@@ -116,7 +116,7 @@ from an asset price historical data.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>step_ma</span>(<span class='no'>recipe</span>, <span class='no'>...</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>SMA</a></span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+    <pre class="usage"><span class='fu'>step_ma</span>(<span class='no'>recipe</span>, <span class='no'>...</span>, <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>SMA</a></span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ma_options</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"ma"</span>,
   <span class='kw'>prices</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>, <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"ma"</span>))
@@ -139,12 +139,6 @@ variables are affected by the step. See
 <a href='https://www.rdocumentation.org/packages/recipes/topics/selections'>selections (from recipes package)</a> for more details.</p></td>
     </tr>
     <tr>
-      <th>weights</th>
-      <td><p>A <code>character</code> vector of length one that specify a column name,
-or a <code>numeric</code> vector for <code>ma_fun</code> that has <code>wts</code> or <code>volume</code> argument.
-See details for more information.</p></td>
-    </tr>
-    <tr>
       <th>ma_fun</th>
       <td><p>A <code>function</code> to extract moving average, or a <code>character</code>
 vector of length one which specify a moving average function.
@@ -154,6 +148,12 @@ Defaults to <a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAv
       <th>n</th>
       <td><p>A <code>numeric</code> vector of length one which specify
 the moving average window. The default is <code>10</code>.</p></td>
+    </tr>
+    <tr>
+      <th>weights</th>
+      <td><p>A <code>character</code> vector of length one that specify a column name,
+or a <code>numeric</code> vector for <code>ma_fun</code> that has <code>wts</code> or <code>volume</code> argument.
+See details for more information.</p></td>
     </tr>
     <tr>
       <th>ma_options</th>
@@ -315,13 +315,14 @@ returned as a ratio to <code>prices</code> variable instead of an absolute diffe
 <span class='co'># using volume based moving average</span>
 <span class='no'>rec</span> <span class='kw'>&lt;-</span> <span class='fu'>recipe</span>(<span class='no'>.</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>btcusdt</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'>step_ma</span>(<span class='no'>close</span>,
-    <span class='kw'>weights</span> <span class='kw'>=</span> <span class='st'>"volume"</span>,
     <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>VWMA</a></span>,
     <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+    <span class='kw'>weights</span> <span class='kw'>=</span> <span class='st'>"volume"</span>,
     <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
   ) <span class='kw'>%&gt;%</span>
   <span class='fu'>step_naomit</span>(<span class='fu'>all_predictors</span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'>prep</span>()</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='input'>
+  <span class='fu'>prep</span>()
+
 <span class='co'># get preprocessed data</span>
 <span class='fu'>juice</span>(<span class='no'>rec</span>)</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 26,182 x 10</span><span>
 #&gt;    datetime             open  high   low close  volume turnover ma_close_value

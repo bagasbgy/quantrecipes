@@ -56,39 +56,3 @@ juice(rec)
 #> # … with 26,162 more rows, and 4 more variables: bbands_ma <dbl>,
 #> #   bbands_up <dbl>, bbands_pctb <dbl>, ma_close_value <dbl>
 ```
-
-Each steps also have `tidy()` methods if you need information regardings
-the selected `"terms"`:
-
-``` r
-# steps[[1]] is our step_bbands
-tidy(rec$steps[[1]])
-#> # A tibble: 3 x 3
-#>   terms value id          
-#>   <chr> <chr> <chr>       
-#> 1 h     high  bbands_zwPHN
-#> 2 l     low   bbands_zwPHN
-#> 3 c     close bbands_zwPHN
-
-# and steps[[2]] is our step_ma
-tidy(rec$steps[[2]])
-#> # A tibble: 1 x 2
-#>   prices id      
-#>   <chr>  <chr>   
-#> 1 close  ma_vqb3K
-```
-
-or even the used `"params"`:
-
-``` r
-tidy(rec$steps[[1]], info = "params")
-#> # A tibble: 1 x 8
-#>   ma_fun     n sd_mult ma_options state previous state_options    id       
-#>   <list> <dbl>   <dbl> <list>     <lgl> <lgl>    <list>           <chr>    
-#> 1 <fn>      20       2 <list [0]> FALSE FALSE    <named list [4]> bbands_z…
-tidy(rec$steps[[2]], info = "params")
-#> # A tibble: 1 x 7
-#>   weights ma_fun     n ma_options state ratio id      
-#>   <lgl>   <list> <dbl> <list>     <lgl> <lgl> <chr>   
-#> 1 NA      <fn>      10 <list [0]> FALSE FALSE ma_vqb3K
-```

@@ -114,33 +114,6 @@
 <a class="sourceLine" id="cb3-22" data-line-number="22"><span class="co">#&gt; 10 2019-05-01 02:20:00 5361. 5362. 5355. 5355. 0.356     1908.     5325.</span></a>
 <a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co">#&gt; # … with 26,162 more rows, and 4 more variables: bbands_ma &lt;dbl&gt;,</span></a>
 <a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co">#&gt; #   bbands_up &lt;dbl&gt;, bbands_pctb &lt;dbl&gt;, ma_close_value &lt;dbl&gt;</span></a></code></pre></div>
-<p>Each steps also have <code>tidy()</code> methods if you need information regardings the selected <code>"terms"</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># steps[[1]] is our step_bbands</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">tidy</span>(rec<span class="op">$</span>steps[[<span class="dv">1</span>]])</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; # A tibble: 3 x 3</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt;   terms value id          </span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       </span></a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; 1 h     high  bbands_NWk19</span></a>
-<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; 2 l     low   bbands_NWk19</span></a>
-<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt; 3 c     close bbands_NWk19</span></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co"># and steps[[2]] is our step_ma</span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="kw">tidy</span>(rec<span class="op">$</span>steps[[<span class="dv">2</span>]])</a>
-<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt; # A tibble: 1 x 2</span></a>
-<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt;   prices id      </span></a>
-<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt;   &lt;chr&gt;  &lt;chr&gt;   </span></a>
-<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co">#&gt; 1 close  ma_X1TYn</span></a></code></pre></div>
-<p>or even the used <code>"params"</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">tidy</span>(rec<span class="op">$</span>steps[[<span class="dv">1</span>]], <span class="dt">info =</span> <span class="st">"params"</span>)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; # A tibble: 1 x 8</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt;   ma_fun     n sd_mult ma_options state previous state_options    id       </span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt;   &lt;list&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;     &lt;lgl&gt; &lt;lgl&gt;    &lt;list&gt;           &lt;chr&gt;    </span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; 1 &lt;fn&gt;      20       2 &lt;list [0]&gt; FALSE FALSE    &lt;named list [4]&gt; bbands_N…</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="kw">tidy</span>(rec<span class="op">$</span>steps[[<span class="dv">2</span>]], <span class="dt">info =</span> <span class="st">"params"</span>)</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; # A tibble: 1 x 7</span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt;   weights ma_fun     n ma_options state ratio id      </span></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt;   &lt;lgl&gt;   &lt;list&gt; &lt;dbl&gt; &lt;list&gt;     &lt;lgl&gt; &lt;lgl&gt; &lt;chr&gt;   </span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; 1 NA      &lt;fn&gt;      10 &lt;list [0]&gt; FALSE FALSE ma_X1TYn</span></a></code></pre></div>
 </div>
 </div>
   </div>
