@@ -1,0 +1,13 @@
+destination: docs
+authors:
+  R. Dimas Bagas Herlambang:
+    href: https://bagasbgy.com
+development:
+  mode: auto
+reference:
+  - title: Trend-Based
+    contents:
+      - step_ma
+  - title: Volatility-Based
+    contents:
+      - step_bbands
