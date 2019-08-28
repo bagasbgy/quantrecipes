@@ -117,11 +117,12 @@ from an asset price historical data.</p>
     </div>
 
     <pre class="usage"><span class='fu'>step_bbands</span>(<span class='no'>recipe</span>, <span class='no'>...</span>, <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>SMA</a></span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>sd_mult</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>ma_options</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>previous</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>state_options</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>high</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>medhigh</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>medlow</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>low</span> <span class='kw'>=</span> <span class='fl'>0</span>),
-  <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"bbands"</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>c</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>, <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"bbands"</span>))
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ma_options</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>previous</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fu'>bbands_threshold</span>(), <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"bbands"</span>,
+  <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>c</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>,
+  <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"bbands"</span>))
+
+<span class='fu'>bbands_threshold</span>(<span class='kw'>high</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>medhigh</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>medlow</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>low</span> <span class='kw'>=</span> <span class='fl'>0</span>)
 
 <span class='co'># S3 method for step_bbands</span>
 <span class='fu'>tidy</span>(<span class='no'>x</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"terms"</span>, <span class='no'>...</span>)</pre>
@@ -150,12 +151,18 @@ Defaults to <a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAv
     <tr>
       <th>n</th>
       <td><p>A <code>numeric</code> vector of length one which specify
-the moving average window. The default is <code>20</code>.</p></td>
+the moving average window.</p></td>
     </tr>
     <tr>
       <th>sd_mult</th>
       <td><p>A <code>numeric</code> vector of length one which specify
 standard deviation multiplier. The default is <code>2</code>.</p></td>
+    </tr>
+    <tr>
+      <th>weights</th>
+      <td><p>A <code>character</code> vector of length one that specify a column name,
+or a <code>numeric</code> vector for <code>ma_fun</code> that has <code>wts</code> or <code>volume</code> argument.
+See details for more information.</p></td>
     </tr>
     <tr>
       <th>ma_options</th>
@@ -174,7 +181,7 @@ the summary of previous states. Defaults to <code>TRUE</code> and
 only works if <code>state = TRUE</code>.</p></td>
     </tr>
     <tr>
-      <th>state_options</th>
+      <th>threshold</th>
       <td><p>A <code>list</code> of threshold that would be used
 as state determination. See details for further information.</p></td>
     </tr>
@@ -230,6 +237,22 @@ as it may affect the computations for subsequent operations</p></td>
       <td><p>A character string that is unique to this step to identify it.</p></td>
     </tr>
     <tr>
+      <th>high</th>
+      <td><p>Threshold for <code>"high"</code> state; see details sections.</p></td>
+    </tr>
+    <tr>
+      <th>medhigh</th>
+      <td><p>Threshold for <code>"medhigh"</code> state; see details sections.</p></td>
+    </tr>
+    <tr>
+      <th>medlow</th>
+      <td><p>Threshold for <code>"medlow"</code> state; see details sections.</p></td>
+    </tr>
+    <tr>
+      <th>low</th>
+      <td><p>Threshold for <code>"low"</code> state; see detailssections.</p></td>
+    </tr>
+    <tr>
       <th>x</th>
       <td><p>A <code>step_bbands</code> object.</p></td>
     </tr>
@@ -260,18 +283,21 @@ which contains the extracted Bollinger Bands features.</p>
 <li><p><code>state_count</code>: cumulative count in current state</p></li>
 </ul>
     <p>These states are determined using four different threshold, which listed
-in <code>state_options</code> arguments. These are the default threshold values:</p><ul>
+in <code>threshold</code> arguments. These are the default threshold values:</p><ul>
 <li><p><code>high</code>: <code>pctb &gt; high</code> (the default is <code>high = 1</code>)</p></li>
 <li><p><code>medhigh</code>: <code>high &gt; pctb &gt; medhigh</code> (the default is <code>medhigh = 0.75</code>)</p></li>
 <li><p><code>medlow</code>: <code>low &lt; pctb &lt; medlow</code> (the default is <code>medlow = 0.25</code>)</p></li>
 <li><p><code>low</code>: <code>pctb &lt; low</code> (the default is <code>low = 0</code>)</p></li>
 </ul>
-    <p>Note that the rest values would be categorized as <code>"medium"</code>.</p>
+    <p>Note: that the rest values would be categorized as <code>"medium"</code>.</p>
+<p>Those default values are produced from <code>bbands_threshold()</code>
+helper functions; any modification to the threshold could be made through
+this helper functions. See examples for some demonstrations.</p>
 <p>Additionally, if <code>previous</code> argument is <code>TRUE</code>, it will also provides
 some summary regarding previous Bollinger Bands states:</p><ul>
 <li><p><code>prev_state</code>: previous state</p></li>
-<li><p><code>prev_medium</code>: previous medium-state</p></li>
-<li><p><code>prev_break</code>: previous break-state</p></li>
+<li><p><code>prev_medium</code>: previous medium-state (<code>"medhigh"</code>, <code>"medlow"</code>)</p></li>
+<li><p><code>prev_break</code>: previous break-state (<code>"high"</code>, <code>"low"</code>)</p></li>
 </ul>
     
 
@@ -280,13 +306,9 @@ some summary regarding previous Bollinger Bands states:</p><ul>
 <span class='co'># import libs</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>quantrecipes</span>)
 
-<span class='co'># an example recipes using built-in data</span>
+<span class='co'># basic usage</span>
 <span class='no'>rec</span> <span class='kw'>&lt;-</span> <span class='fu'>recipe</span>(<span class='no'>.</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>btcusdt</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'>step_bbands</span>(<span class='no'>high</span>, <span class='no'>low</span>, <span class='no'>close</span>,
-    <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>SMA</a></span>,
-    <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>20</span>,
-    <span class='kw'>sd_mult</span> <span class='kw'>=</span> <span class='fl'>2</span>
-  ) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_bbands</span>(<span class='no'>high</span>, <span class='no'>low</span>, <span class='no'>close</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'>step_naomit</span>(<span class='fu'>all_predictors</span>()) <span class='kw'>%&gt;%</span>
   <span class='fu'>prep</span>()
 
@@ -308,12 +330,33 @@ some summary regarding previous Bollinger Bands states:</p><ul>
 #&gt; #   bbands_up </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #949494;'>, bbands_pctb </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
 <span class='co'># using state argument</span>
 <span class='no'>rec</span> <span class='kw'>&lt;-</span> <span class='fu'>recipe</span>(<span class='no'>.</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>btcusdt</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'>step_bbands</span>(<span class='no'>high</span>, <span class='no'>low</span>, <span class='no'>close</span>,
-    <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>SMA</a></span>,
-    <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>20</span>,
-    <span class='kw'>sd_mult</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-    <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-  ) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_bbands</span>(<span class='no'>high</span>, <span class='no'>low</span>, <span class='no'>close</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_naomit</span>(<span class='fu'>all_predictors</span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'>prep</span>()
+
+<span class='co'># get preprocessed data</span>
+<span class='fu'>juice</span>(<span class='no'>rec</span>)</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 26,166 x 16</span><span>
+#&gt;    datetime             open  high   low close volume turnover bbands_dn
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 2019-05-01 </span><span style='color: #949494;'>02:05:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>344. </span><span style='text-decoration: underline;'>5</span><span>352. </span><span style='text-decoration: underline;'>5</span><span>344  </span><span style='text-decoration: underline;'>5</span><span>352. 1.26      </span><span style='text-decoration: underline;'>6</span><span>716.     </span><span style='text-decoration: underline;'>5</span><span>329.
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 2019-05-01 </span><span style='color: #949494;'>02:10:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>353  </span><span style='text-decoration: underline;'>5</span><span>355. </span><span style='text-decoration: underline;'>5</span><span>348. </span><span style='text-decoration: underline;'>5</span><span>348. 0.191     </span><span style='text-decoration: underline;'>1</span><span>020.     </span><span style='text-decoration: underline;'>5</span><span>328.
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 2019-05-01 </span><span style='color: #949494;'>02:15:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>349. </span><span style='text-decoration: underline;'>5</span><span>369. </span><span style='text-decoration: underline;'>5</span><span>348. </span><span style='text-decoration: underline;'>5</span><span>362. 0.310     </span><span style='text-decoration: underline;'>1</span><span>661.     </span><span style='text-decoration: underline;'>5</span><span>326.
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 2019-05-01 </span><span style='color: #949494;'>02:20:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>361. </span><span style='text-decoration: underline;'>5</span><span>362. </span><span style='text-decoration: underline;'>5</span><span>355. </span><span style='text-decoration: underline;'>5</span><span>355. 0.356     </span><span style='text-decoration: underline;'>1</span><span>908.     </span><span style='text-decoration: underline;'>5</span><span>325.
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 2019-05-01 </span><span style='color: #949494;'>02:25:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>355. </span><span style='text-decoration: underline;'>5</span><span>362. </span><span style='text-decoration: underline;'>5</span><span>355. </span><span style='text-decoration: underline;'>5</span><span>360. 0.860     </span><span style='text-decoration: underline;'>4</span><span>610.     </span><span style='text-decoration: underline;'>5</span><span>325.
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 2019-05-01 </span><span style='color: #949494;'>02:30:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>362. </span><span style='text-decoration: underline;'>5</span><span>364. </span><span style='text-decoration: underline;'>5</span><span>360. </span><span style='text-decoration: underline;'>5</span><span>364. 0.027</span><span style='text-decoration: underline;'>2</span><span>     146.     </span><span style='text-decoration: underline;'>5</span><span>325.
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 2019-05-01 </span><span style='color: #949494;'>02:35:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>360. </span><span style='text-decoration: underline;'>5</span><span>360. </span><span style='text-decoration: underline;'>5</span><span>358. </span><span style='text-decoration: underline;'>5</span><span>360. 0.263     </span><span style='text-decoration: underline;'>1</span><span>411.     </span><span style='text-decoration: underline;'>5</span><span>325.
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 2019-05-01 </span><span style='color: #949494;'>02:40:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>360. </span><span style='text-decoration: underline;'>5</span><span>361. </span><span style='text-decoration: underline;'>5</span><span>358. </span><span style='text-decoration: underline;'>5</span><span>359. 1.03      </span><span style='text-decoration: underline;'>5</span><span>499.     </span><span style='text-decoration: underline;'>5</span><span>326.
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 2019-05-01 </span><span style='color: #949494;'>02:45:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>359. </span><span style='text-decoration: underline;'>5</span><span>361. </span><span style='text-decoration: underline;'>5</span><span>357. </span><span style='text-decoration: underline;'>5</span><span>359. 0.515     </span><span style='text-decoration: underline;'>2</span><span>759.     </span><span style='text-decoration: underline;'>5</span><span>326.
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 2019-05-01 </span><span style='color: #949494;'>02:50:00</span><span> </span><span style='text-decoration: underline;'>5</span><span>358. </span><span style='text-decoration: underline;'>5</span><span>359. </span><span style='text-decoration: underline;'>5</span><span>357. </span><span style='text-decoration: underline;'>5</span><span>357. 1.17      </span><span style='text-decoration: underline;'>6</span><span>252.     </span><span style='text-decoration: underline;'>5</span><span>327.
+#&gt; </span><span style='color: #949494;'># … with 26,156 more rows, and 8 more variables: bbands_ma </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #949494;'>,
+#&gt; #   bbands_up </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #949494;'>, bbands_pctb </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #949494;'>, bbands_state </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span style='color: #949494;'>,
+#&gt; #   bbands_state_count </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span style='color: #949494;'>, bbands_prev_state </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span style='color: #949494;'>,
+#&gt; #   bbands_prev_medium </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span style='color: #949494;'>, bbands_prev_break </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span></div><div class='input'>
+<span class='co'># modify the threshold</span>
+<span class='no'>rec</span> <span class='kw'>&lt;-</span> <span class='fu'>recipe</span>(<span class='no'>.</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>btcusdt</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_bbands</span>(<span class='no'>high</span>, <span class='no'>low</span>, <span class='no'>close</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fu'>bbands_threshold</span>(
+    <span class='kw'>high</span> <span class='kw'>=</span> <span class='fl'>0.9</span>, <span class='kw'>medhigh</span> <span class='kw'>=</span> <span class='fl'>0.65</span>, <span class='kw'>medlow</span> <span class='kw'>=</span> <span class='fl'>0.35</span>, <span class='kw'>low</span> <span class='kw'>=</span> <span class='fl'>0.1</span>
+  )) <span class='kw'>%&gt;%</span>
   <span class='fu'>step_naomit</span>(<span class='fu'>all_predictors</span>()) <span class='kw'>%&gt;%</span>
   <span class='fu'>prep</span>()
 
