@@ -14,8 +14,6 @@
 #'  are given, it will represent the `"high"`, `"low"`, and `"close"` prices,
 #'  respectively. Otherwise, if only one column name is given, it will treated
 #'  as `"close"` price.
-#' @param n A `numeric` vector of length one which specify
-#'  the moving average window. The default is `20`.
 #' @param sd_mult A `numeric` vector of length one which specify
 #'  standard deviation multiplier. The default is `2`.
 #' @param state An option to specify whether to return
@@ -23,7 +21,7 @@
 #' @param previous An option to specify whether to return
 #'  the summary of previous states. Defaults to `TRUE` and
 #'  only works if `state = TRUE`.
-#' @param state_options A `list` of threshold that would be used
+#' @param threshold A `list` of threshold that would be used
 #'  as state determination. See details for further information.
 #' @param h A container for the names of `"high"`. Leave to `NULL`
 #'  as it will be populated by [prep()][recipes::prep.recipe] function.
@@ -63,34 +61,34 @@
 #'  * `state_count`: cumulative count in current state
 #'
 #'  These states are determined using four different threshold, which listed
-#'  in `state_options` arguments. These are the default threshold values:
+#'  in `threshold` arguments. These are the default threshold values:
 #'
 #'  * `high`: `pctb > high` (the default is `high = 1`)
 #'  * `medhigh`: `high > pctb > medhigh` (the default is `medhigh = 0.75`)
 #'  * `medlow`: `low < pctb < medlow` (the default is `medlow = 0.25`)
 #'  * `low`: `pctb < low` (the default is `low = 0`)
 #'
-#'  Note that the rest values would be categorized as `"medium"`.
+#'  Note: that the rest values would be categorized as `"medium"`.
+#'
+#'  Those default values are produced from `bbands_threshold()`
+#'  helper functions; any modification to the threshold could be made through
+#'  this helper functions. See examples for some demonstrations.
 #'
 #'  Additionally, if `previous` argument is `TRUE`, it will also provides
 #'  some summary regarding previous Bollinger Bands states:
 #'
 #'  * `prev_state`: previous state
-#'  * `prev_medium`: previous medium-state
-#'  * `prev_break`: previous break-state
+#'  * `prev_medium`: previous medium-state (`"medhigh"`, `"medlow"`)
+#'  * `prev_break`: previous break-state (`"high"`, `"low"`)
 #'
 #' @examples
 #'
 #' # import libs
 #' library(quantrecipes)
 #'
-#' # an example recipes using built-in data
+#' # basic usage
 #' rec <- recipe(. ~ ., data = btcusdt) %>%
-#'   step_bbands(high, low, close,
-#'     ma_fun = TTR::SMA,
-#'     n = 20,
-#'     sd_mult = 2
-#'   ) %>%
+#'   step_bbands(high, low, close) %>%
 #'   step_naomit(all_predictors()) %>%
 #'   prep()
 #'
@@ -99,12 +97,18 @@
 #'
 #' # using state argument
 #' rec <- recipe(. ~ ., data = btcusdt) %>%
-#'   step_bbands(high, low, close,
-#'     ma_fun = TTR::SMA,
-#'     n = 20,
-#'     sd_mult = 2,
-#'     state = TRUE
-#'   ) %>%
+#'   step_bbands(high, low, close, state = TRUE) %>%
+#'   step_naomit(all_predictors()) %>%
+#'   prep()
+#'
+#' # get preprocessed data
+#' juice(rec)
+#'
+#' # modify the threshold
+#' rec <- recipe(. ~ ., data = btcusdt) %>%
+#'   step_bbands(high, low, close, state = TRUE, threshold = bbands_threshold(
+#'     high = 0.9, medhigh = 0.65, medlow = 0.35, low = 0.1
+#'   )) %>%
 #'   step_naomit(all_predictors()) %>%
 #'   prep()
 #'
@@ -114,9 +118,9 @@
 #' @export
 
 step_bbands <- function(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
-                        ma_options = list(), state = FALSE, previous = TRUE,
-                        state_options = list(high = 1, medhigh = 0.75,
-                                             medlow = 0.25, low = 0),
+                        weights = NULL, ma_options = list(),
+                        state = FALSE, previous = TRUE,
+                        threshold = bbands_threshold(),
                         prefix = "bbands", h = NULL, l = NULL, c = NULL,
                         type = NULL, role = "predictor", trained = FALSE,
                         skip = FALSE, id = rand_id("bbands")) {
@@ -130,10 +134,11 @@ step_bbands <- function(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
     ma_fun = ma_fun,
     n = n,
     sd_mult = sd_mult,
+    weights = weights,
     ma_options = ma_options,
     state = state,
     previous = previous,
-    state_options = state_options,
+    threshold = threshold,
     prefix = prefix,
     h = h,
     l = l,
@@ -147,8 +152,8 @@ step_bbands <- function(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
 
 }
 
-step_bbands_new <- function(terms, ma_fun, n, sd_mult, ma_options,
-                            state, previous, state_options,
+step_bbands_new <- function(terms, ma_fun, n, sd_mult, weights, ma_options,
+                            state, previous, threshold,
                             prefix, h, l, c, type,
                             role, trained, skip, id) {
 
@@ -158,10 +163,11 @@ step_bbands_new <- function(terms, ma_fun, n, sd_mult, ma_options,
     ma_fun = ma_fun,
     n = n,
     sd_mult = sd_mult,
+    weights = weights,
     ma_options = ma_options,
     state = state,
     previous = previous,
-    state_options = state_options,
+    threshold = threshold,
     prefix = prefix,
     h = h,
     l = l,
@@ -224,10 +230,11 @@ prep.step_bbands <- function(x, training, info = NULL, ...) {
     ma_fun = x$ma_fun,
     n = x$n,
     sd_mult = x$sd_mult,
+    weights = x$weights,
     ma_options = x$ma_options,
     state = x$state,
     previous = x$previous,
-    state_options = x$state_options,
+    threshold = x$threshold,
     prefix = x$prefix,
     h = x$h,
     l = x$l,
@@ -261,16 +268,35 @@ bake.step_bbands <- function(object, new_data, ...) {
 
   }
 
+  if (!is.null(object$weights)) {
+
+    if (is.character(object$weights)) {
+
+      weights <- getElement(new_data, object$weights)
+
+    } else if (is.numeric(object$weights)) {
+
+      weights <- object$weights
+
+    }
+
+  } else {
+
+    weights <- object$weights
+
+  }
+
   # list all args
   args_list <- list(
     x = x,
     ma_fun = object$ma_fun,
     n = object$n,
     sd_mult = object$sd_mult,
+    weights = weights,
     ma_options = object$ma_options,
     state = object$state,
     previous = object$previous,
-    state_options = object$state_options
+    threshold = object$threshold
   )
 
   # execute input-output function
@@ -294,8 +320,8 @@ bake.step_bbands <- function(object, new_data, ...) {
 # input-output resolver ---------------------------------------------------
 
 # bbands feature extractor
-get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
-                       state, previous, state_options) {
+get_bbands <- function(x, ma_fun, n, sd_mult, weights, ma_options,
+                       state, previous, threshold) {
 
   # list all args
   args_list <- list(
@@ -304,6 +330,20 @@ get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
     n = n,
     sd = sd_mult
   )
+
+  if (!is.null(weights)) {
+
+    if ("wts" %in% names(formals(ma_fun))) {
+
+      args_list <- c(args_list, list(wts = weights))
+
+    } else if ("volume" %in% names(formals(ma_fun))) {
+
+      args_list <- c(args_list, list(volume = weights))
+
+    }
+
+  }
 
   args_list <- c(args_list, ma_options)
 
@@ -318,10 +358,10 @@ get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
   # record state
   if (state) {
 
-    high <- state_options[["high"]]
-    medhigh <- state_options[["medhigh"]]
-    medlow <- state_options[["medlow"]]
-    low <- state_options[["low"]]
+    high <- threshold[["high"]]
+    medhigh <- threshold[["medhigh"]]
+    medlow <- threshold[["medlow"]]
+    low <- threshold[["low"]]
 
     results <- results %>%
       mutate(state = case_when(
@@ -375,12 +415,31 @@ get_bbands <- function(x, ma_fun, n, sd_mult, ma_options,
 
 }
 
+# helpers -----------------------------------------------------------------
+
+#' @rdname step_bbands
+#'
+#' @param high Threshold for `"high"` state; see details sections.
+#' @param medhigh Threshold for `"medhigh"` state; see details sections.
+#' @param medlow Threshold for `"medlow"` state; see details sections.
+#' @param low Threshold for `"low"` state; see detailssections.
+#'
+#' @export
+
+bbands_threshold <- function(high = 1, medhigh = 0.75, medlow = 0.25, low = 0) {
+
+  list(high = high, medhigh = medhigh, medlow = medlow, low = low)
+
+}
+
 # tidy and print interface ------------------------------------------------
 
 #' @rdname step_bbands
+#'
 #' @param x A `step_bbands` object.
 #' @param info Options for `tidy()` method; whether to return tidied
 #'  information for used `"terms"` or `"params"`
+#'
 #' @export
 
 tidy.step_bbands <- function(x, info = "terms", ...) {
@@ -420,7 +479,7 @@ tidy.step_bbands <- function(x, info = "terms", ...) {
       ma_options = list(x$ma_options),
       state = x$state,
       previous = x$previous,
-      state_options = list(x$state_options),
+      threshold = list(x$threshold),
     )
 
   }

@@ -2,15 +2,17 @@
 % Please edit documentation in R/step_bbands.R
 \name{step_bbands}
 \alias{step_bbands}
+\alias{bbands_threshold}
 \alias{tidy.step_bbands}
 \title{Extract Bollinger Bands features}
 \usage{
 step_bbands(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
-  ma_options = list(), state = FALSE, previous = TRUE,
-  state_options = list(high = 1, medhigh = 0.75, medlow = 0.25, low = 0),
-  prefix = "bbands", h = NULL, l = NULL, c = NULL, type = NULL,
-  role = "predictor", trained = FALSE, skip = FALSE,
-  id = rand_id("bbands"))
+  weights = NULL, ma_options = list(), state = FALSE,
+  previous = TRUE, threshold = bbands_threshold(), prefix = "bbands",
+  h = NULL, l = NULL, c = NULL, type = NULL, role = "predictor",
+  trained = FALSE, skip = FALSE, id = rand_id("bbands"))
+
+bbands_threshold(high = 1, medhigh = 0.75, medlow = 0.25, low = 0)
 
 \method{tidy}{step_bbands}(x, info = "terms", ...)
 }
@@ -28,10 +30,14 @@ vector of length one which specify a moving average function.
 Defaults to \link[TTR:SMA]{TTR::SMA}.}
 
 \item{n}{A \code{numeric} vector of length one which specify
-the moving average window. The default is \code{20}.}
+the moving average window.}
 
 \item{sd_mult}{A \code{numeric} vector of length one which specify
 standard deviation multiplier. The default is \code{2}.}
+
+\item{weights}{A \code{character} vector of length one that specify a column name,
+or a \code{numeric} vector for \code{ma_fun} that has \code{wts} or \code{volume} argument.
+See details for more information.}
 
 \item{ma_options}{A \code{list} of additional argument(s) that would be passed
 to \code{ma_fun} function.}
@@ -43,7 +49,7 @@ the current states of the Bollinger Bands. Defaults to \code{TRUE}.}
 the summary of previous states. Defaults to \code{TRUE} and
 only works if \code{state = TRUE}.}
 
-\item{state_options}{A \code{list} of threshold that would be used
+\item{threshold}{A \code{list} of threshold that would be used
 as state determination. See details for further information.}
 
 \item{prefix}{A \code{character} vector of length one that would be used
@@ -79,6 +85,14 @@ as it may affect the computations for subsequent operations}
 
 \item{id}{A character string that is unique to this step to identify it.}
 
+\item{high}{Threshold for \code{"high"} state; see details sections.}
+
+\item{medhigh}{Threshold for \code{"medhigh"} state; see details sections.}
+
+\item{medlow}{Threshold for \code{"medlow"} state; see details sections.}
+
+\item{low}{Threshold for \code{"low"} state; see detailssections.}
+
 \item{x}{A \code{step_bbands} object.}
 
 \item{info}{Options for \code{tidy()} method; whether to return tidied
@@ -112,7 +126,7 @@ If \code{state} argument is \code{TRUE}, it will also produces:
 }
 
 These states are determined using four different threshold, which listed
-in \code{state_options} arguments. These are the default threshold values:
+in \code{threshold} arguments. These are the default threshold values:
 \itemize{
 \item \code{high}: \code{pctb > high} (the default is \code{high = 1})
 \item \code{medhigh}: \code{high > pctb > medhigh} (the default is \code{medhigh = 0.75})
@@ -120,14 +134,18 @@ in \code{state_options} arguments. These are the default threshold values:
 \item \code{low}: \code{pctb < low} (the default is \code{low = 0})
 }
 
-Note that the rest values would be categorized as \code{"medium"}.
+Note: that the rest values would be categorized as \code{"medium"}.
+
+Those default values are produced from \code{bbands_threshold()}
+helper functions; any modification to the threshold could be made through
+this helper functions. See examples for some demonstrations.
 
 Additionally, if \code{previous} argument is \code{TRUE}, it will also provides
 some summary regarding previous Bollinger Bands states:
 \itemize{
 \item \code{prev_state}: previous state
-\item \code{prev_medium}: previous medium-state
-\item \code{prev_break}: previous break-state
+\item \code{prev_medium}: previous medium-state (\code{"medhigh"}, \code{"medlow"})
+\item \code{prev_break}: previous break-state (\code{"high"}, \code{"low"})
 }
 }
 \examples{
@@ -135,13 +153,9 @@ some summary regarding previous Bollinger Bands states:
 # import libs
 library(quantrecipes)
 
-# an example recipes using built-in data
+# basic usage
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
-  step_bbands(high, low, close,
-    ma_fun = TTR::SMA,
-    n = 20,
-    sd_mult = 2
-  ) \%>\%
+  step_bbands(high, low, close) \%>\%
   step_naomit(all_predictors()) \%>\%
   prep()
 
@@ -150,12 +164,18 @@ juice(rec)
 
 # using state argument
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
-  step_bbands(high, low, close,
-    ma_fun = TTR::SMA,
-    n = 20,
-    sd_mult = 2,
-    state = TRUE
-  ) \%>\%
+  step_bbands(high, low, close, state = TRUE) \%>\%
+  step_naomit(all_predictors()) \%>\%
+  prep()
+
+# get preprocessed data
+juice(rec)
+
+# modify the threshold
+rec <- recipe(. ~ ., data = btcusdt) \%>\%
+  step_bbands(high, low, close, state = TRUE, threshold = bbands_threshold(
+    high = 0.9, medhigh = 0.65, medlow = 0.35, low = 0.1
+  )) \%>\%
   step_naomit(all_predictors()) \%>\%
   prep()
 

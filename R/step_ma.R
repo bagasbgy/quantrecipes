@@ -15,7 +15,7 @@
 #'  vector of length one which specify a moving average function.
 #'  Defaults to [TTR::SMA].
 #' @param n A `numeric` vector of length one which specify
-#'  the moving average window. The default is `10`.
+#'  the moving average window.
 #' @param weights A `character` vector of length one that specify a column name,
 #'  or a `numeric` vector for `ma_fun` that has `wts` or `volume` argument.
 #'  See details for more information.
@@ -69,9 +69,9 @@
 #' # import libs
 #' library(quantrecipes)
 #'
-#' # an example recipes using built-in data
+#' # basic usage
 #' rec <- recipe(. ~ ., data = btcusdt) %>%
-#'   step_ma(close, ma_fun = TTR::SMA, n = 10) %>%
+#'   step_ma(close) %>%
 #'   step_naomit(all_predictors()) %>%
 #'   prep()
 #'
@@ -80,7 +80,7 @@
 #'
 #' # using state argument
 #' rec <- recipe(. ~ ., data = btcusdt) %>%
-#'   step_ma(close, ma_fun = TTR::SMA, n = 10, state = TRUE) %>%
+#'   step_ma(close, state = TRUE) %>%
 #'   step_naomit(all_predictors()) %>%
 #'   prep()
 #'
@@ -101,7 +101,21 @@
 #' # get preprocessed data
 #' juice(rec)
 #'
-#' # using volume based moving average
+#' # using custom weights for weighted moving average
+#' rec <- recipe(. ~ ., data = btcusdt) %>%
+#'   step_ma(close,
+#'     ma_fun = TTR::WMA,
+#'     n = 10,
+#'     weights = c(rep(1, 9), 10),
+#'     state = TRUE
+#'   ) %>%
+#'   step_naomit(all_predictors()) %>%
+#'   prep()
+#'
+#' # get preprocessed data
+#' juice(rec)
+#'
+#' # using volume-based moving average
 #' rec <- recipe(. ~ ., data = btcusdt) %>%
 #'   step_ma(close,
 #'     ma_fun = TTR::VWMA,
@@ -348,9 +362,11 @@ get_ma <- function(price, ma_fun, n, weights, ma_options, state, ratio) {
 # tidy and print interface ------------------------------------------------
 
 #' @rdname step_ma
+#'
 #' @param x A `step_ma` object.
 #' @param info Options for `tidy()` method; whether to return tidied
 #'  information for used `"terms"` or `"params"`
+#'
 #' @export
 
 tidy.step_ma <- function(x, info = "terms", ...) {

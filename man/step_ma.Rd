@@ -25,7 +25,7 @@ vector of length one which specify a moving average function.
 Defaults to \link[TTR:SMA]{TTR::SMA}.}
 
 \item{n}{A \code{numeric} vector of length one which specify
-the moving average window. The default is \code{10}.}
+the moving average window.}
 
 \item{weights}{A \code{character} vector of length one that specify a column name,
 or a \code{numeric} vector for \code{ma_fun} that has \code{wts} or \code{volume} argument.
@@ -101,9 +101,9 @@ returned as a ratio to \code{prices} variable instead of an absolute difference.
 # import libs
 library(quantrecipes)
 
-# an example recipes using built-in data
+# basic usage
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
-  step_ma(close, ma_fun = TTR::SMA, n = 10) \%>\%
+  step_ma(close) \%>\%
   step_naomit(all_predictors()) \%>\%
   prep()
 
@@ -112,7 +112,7 @@ juice(rec)
 
 # using state argument
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
-  step_ma(close, ma_fun = TTR::SMA, n = 10, state = TRUE) \%>\%
+  step_ma(close, state = TRUE) \%>\%
   step_naomit(all_predictors()) \%>\%
   prep()
 
@@ -133,7 +133,21 @@ rec <- recipe(. ~ ., data = btcusdt) \%>\%
 # get preprocessed data
 juice(rec)
 
-# using volume based moving average
+# using custom weights for weighted moving average
+rec <- recipe(. ~ ., data = btcusdt) \%>\%
+  step_ma(close,
+    ma_fun = TTR::WMA,
+    n = 10,
+    weights = c(rep(1, 9), 10),
+    state = TRUE
+  ) \%>\%
+  step_naomit(all_predictors()) \%>\%
+  prep()
+
+# get preprocessed data
+juice(rec)
+
+# using volume-based moving average
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
   step_ma(close,
     ma_fun = TTR::VWMA,
