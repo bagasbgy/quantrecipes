@@ -26,7 +26,7 @@
 #'  more informations. Defaults to `FALSE`.
 #' @param ratio Whether to return the moving average `spread` as ratio or
 #'  absolute difference. See details for more informations. Defaults to `TRUE`.
-#' @param prices A container for asd. Leave to `NULL`
+#' @param prices A container for selected prices columns. Leave to `NULL`
 #'  as it will be populated by [prep()][recipes::prep.recipe] function.
 #' @param prefix A `character` vector of length one that would be used
 #'  as a prefix to the created columns.

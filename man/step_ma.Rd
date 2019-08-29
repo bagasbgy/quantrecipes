@@ -44,7 +44,7 @@ absolute difference. See details for more informations. Defaults to \code{TRUE}.
 \item{prefix}{A \code{character} vector of length one that would be used
 as a prefix to the created columns.}
 
-\item{prices}{A container for asd. Leave to \code{NULL}
+\item{prices}{A container for selected prices columns. Leave to \code{NULL}
 as it will be populated by \link[recipes:prep.recipe]{prep()} function.}
 
 \item{role}{For model terms created by this step, what analysis

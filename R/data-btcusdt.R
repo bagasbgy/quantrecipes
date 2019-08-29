@@ -55,4 +55,4 @@
 # )
 #
 # # save the data
-# use_data(btcusdt, overwrite = TRUE)
+# usethis::use_data(btcusdt, overwrite = TRUE)

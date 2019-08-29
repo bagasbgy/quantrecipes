@@ -11,9 +11,13 @@ reference:
   - title: Volatility-based indicators
     contents:
       - step_bbands
+  - title: Backtest tools
+    contents:
+      - step_cumret
   - title: Visualization tools
     contents:
       - step_zigzag
   - title: Example Datasets
     contents:
       - btcusdt
+      - actions
