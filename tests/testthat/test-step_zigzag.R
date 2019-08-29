@@ -27,3 +27,17 @@ test_that("step_zigzag state output returned expected number of columns and rows
   expect_gte(nrow(output1), 1)
 
 })
+
+# test tidying recipes meta
+rec <- recipe(. ~ ., data = btcusdt) %>%
+  step_zigzag(close) %>%
+  step_rm(-matches("zigzag_")) %>%
+  step_naomit(all_predictors()) %>%
+  prep()
+
+test_that("tidying step_ma meta doesn't produces any error", {
+
+  expect_silent(tidy(rec$steps[[1]]))
+  expect_silent(tidy(rec$steps[[1]], info = "params"))
+
+})

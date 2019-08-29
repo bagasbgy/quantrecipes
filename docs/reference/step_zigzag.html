@@ -8,11 +8,13 @@
 
 <title>Extract ZigZag features — step_zigzag • quantrecipes</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,12 +34,13 @@
 
   <link href="../extra.css" rel="stylesheet">
   
-<meta property="og:title" content="Extract ZigZag features — step_zigzag" />
 
+<meta property="og:title" content="Extract ZigZag features — step_zigzag" />
 <meta property="og:description" content="step_zigzag creates a specification of a recipe
 step that will extract ZigZag features from an asset price
 historical data." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -83,7 +86,6 @@ historical data." />
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/bagasbgy/quantrecipes">
@@ -109,18 +111,19 @@ historical data." />
     </div>
 
     <div class="ref-description">
-    
     <p><code>step_zigzag</code> creates a <strong>specification</strong> of a recipe
 step that will extract <strong>ZigZag</strong> features from an asset price
 historical data.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>step_zigzag</span>(<span class='no'>recipe</span>, <span class='no'>...</span>, <span class='kw'>change</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>percent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>retrace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>), <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"zigzag"</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>l</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>c</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>,
-  <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"zigzag"</span>))</pre>
-    
+  <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"zigzag"</span>))
+
+<span class='co'># S3 method for step_zigzag</span>
+<span class='fu'>tidy</span>(<span class='no'>x</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"terms"</span>, <span class='no'>...</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -138,15 +141,18 @@ as <code>"close"</code> price.</p></td>
     </tr>
     <tr>
       <th>change</th>
-      <td><p>in development</p></td>
+      <td><p>A <code>numeric</code> vector of length one, to specify the minimum price
+change to be considered as the change from peak or trough.</p></td>
     </tr>
     <tr>
       <th>percent</th>
-      <td><p>in development</p></td>
+      <td><p>A <code>logical</code> to specify whether the <code>change</code> argument should
+be interpreted as percentage change (<code>TRUE</code>) or absolute change (<code>FALSE</code>)</p></td>
     </tr>
     <tr>
       <th>retrace</th>
-      <td><p>in development</p></td>
+      <td><p>A <code>logical</code> to specify whether the <code>change</code> argument should
+be interpreted as a change from previous move, or from last peak/trough.</p></td>
     </tr>
     <tr>
       <th>state</th>
@@ -155,7 +161,8 @@ the current states of the ZigZag. Defaults to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>span</th>
-      <td><p>An option to specify the <code>swing</code> span. See details.</p></td>
+      <td><p>A <code>numeric</code> vector of length one to specify the <code>swing</code> span.
+Default to <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c(0, 0)</a></code>; zero addition to backward and forward. See details.</p></td>
     </tr>
     <tr>
       <th>prefix</th>
@@ -208,17 +215,35 @@ as it may affect the computations for subsequent operations</p></td>
       <th>id</th>
       <td><p>A character string that is unique to this step to identify it.</p></td>
     </tr>
+    <tr>
+      <th>x</th>
+      <td><p>A <code>step_zigzag</code> object.</p></td>
+    </tr>
+    <tr>
+      <th>info</th>
+      <td><p>Options for <code>tidy()</code> method; whether to return tidied
+information for used <code>"terms"</code> or <code>"params"</code></p></td>
+    </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An updated version of <code>recipe</code> with the new step
 added to the sequence of existing steps (if any).</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>in development</p>
-    
+    <p>The output from this step are several new columns
+which contains the extracted moving average features.</p>
+<p>For basic output, this step will produces:</p><ul>
+<li><p><code>value</code>: the estimated ZigZag value</p></li>
+</ul>
+    <p>If <code>state</code> argument is <code>TRUE</code>, it will also produces:</p><ul>
+<li><p><code>trend</code>: current trend</p></li>
+<li><p><code>swing</code>: swing points; either <code>"up"</code>, <code>"down"</code>, or <code>"hold"</code></p></li>
+</ul>
+    <p>Note that the <code>"up"</code> and <code>"down"</code> are determined as
+the first <code>trend</code> change; you can control its wide and position using
+<code>span</code> arguments.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -252,11 +277,8 @@ added to the sequence of existing steps (if any).</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

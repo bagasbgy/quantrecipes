@@ -44,7 +44,7 @@ Here's a quick example for setting-up a recipe to produce ZigZag, Bollinger Band
 ```{r}
 # an example recipe
 rec <- recipe(. ~ ., data = btcusdt) %>% 
-  step_zigzag(close, change = 0.5, state = TRUE, span = c(1, -1)) %>% 
+  step_zigzag(close, change = 0.3, state = TRUE, span = c(1, -1)) %>% 
   step_bbands(high, low, close) %>% 
   step_ma(close) %>% 
   step_naomit(all_predictors()) %>% 

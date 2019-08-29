@@ -92,7 +92,7 @@
 <p>Here’s a quick example for setting-up a recipe to produce ZigZag, Bollinger Bands, and moving average:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># an example recipe</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">rec &lt;-<span class="st"> </span><span class="kw">recipe</span>(. <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> btcusdt) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/step_zigzag.html">step_zigzag</a></span>(close, <span class="dt">change =</span> <span class="fl">0.5</span>, <span class="dt">state =</span> <span class="ot">TRUE</span>, <span class="dt">span =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">-1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/step_zigzag.html">step_zigzag</a></span>(close, <span class="dt">change =</span> <span class="fl">0.3</span>, <span class="dt">state =</span> <span class="ot">TRUE</span>, <span class="dt">span =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">-1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/step_bbands.html">step_bbands</a></span>(high, low, close) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/step_ma.html">step_ma</a></span>(close) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb3-6" data-line-number="6"><span class="st">  </span><span class="kw">step_naomit</span>(<span class="kw">all_predictors</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -100,20 +100,20 @@
 <a class="sourceLine" id="cb3-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co"># quick check</span></a>
 <a class="sourceLine" id="cb3-10" data-line-number="10"><span class="kw">juice</span>(rec)</a>
-<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt; # A tibble: 26,155 x 15</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt; # A tibble: 26,161 x 15</span></a>
 <a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt;    datetime             open  high   low close volume turnover zigzag_value</span></a>
 <a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt;    &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt;  1 2019-05-01 01:35:00 5340. 5340. 5331. 5331. 0.510     2722.        5348.</span></a>
-<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt;  2 2019-05-01 01:40:00 5338. 5339. 5333  5333  0.402     2146.        5349.</span></a>
-<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;  3 2019-05-01 01:45:00 5335. 5337. 5333  5336. 0.819     4368.        5351.</span></a>
-<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt;  4 2019-05-01 01:50:00 5336. 5337. 5336. 5337. 0.0199     106.        5352.</span></a>
-<a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt;  5 2019-05-01 01:55:00 5338. 5340. 5336. 5340. 1.39      7437.        5354.</span></a>
-<a class="sourceLine" id="cb3-19" data-line-number="19"><span class="co">#&gt;  6 2019-05-01 02:00:00 5342. 5344. 5342  5344. 1.03      5504.        5355.</span></a>
-<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt;  7 2019-05-01 02:05:00 5344. 5352. 5344  5352. 1.26      6716.        5356.</span></a>
-<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt;  8 2019-05-01 02:10:00 5353  5355. 5348. 5348. 0.191     1020.        5358.</span></a>
-<a class="sourceLine" id="cb3-22" data-line-number="22"><span class="co">#&gt;  9 2019-05-01 02:15:00 5349. 5369. 5348. 5362. 0.310     1661.        5359.</span></a>
-<a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co">#&gt; 10 2019-05-01 02:20:00 5361. 5362. 5355. 5355. 0.356     1908.        5361.</span></a>
-<a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co">#&gt; # … with 26,145 more rows, and 7 more variables: zigzag_trend &lt;fct&gt;,</span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt;  1 2019-05-01 01:35:00 5340. 5340. 5331. 5331. 0.510     2722.        5344.</span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt;  2 2019-05-01 01:40:00 5338. 5339. 5333  5333  0.402     2146.        5346.</span></a>
+<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;  3 2019-05-01 01:45:00 5335. 5337. 5333  5336. 0.819     4368.        5348.</span></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt;  4 2019-05-01 01:50:00 5336. 5337. 5336. 5337. 0.0199     106.        5350.</span></a>
+<a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt;  5 2019-05-01 01:55:00 5338. 5340. 5336. 5340. 1.39      7437.        5351.</span></a>
+<a class="sourceLine" id="cb3-19" data-line-number="19"><span class="co">#&gt;  6 2019-05-01 02:00:00 5342. 5344. 5342  5344. 1.03      5504.        5353.</span></a>
+<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt;  7 2019-05-01 02:05:00 5344. 5352. 5344  5352. 1.26      6716.        5355.</span></a>
+<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt;  8 2019-05-01 02:10:00 5353  5355. 5348. 5348. 0.191     1020.        5357.</span></a>
+<a class="sourceLine" id="cb3-22" data-line-number="22"><span class="co">#&gt;  9 2019-05-01 02:15:00 5349. 5369. 5348. 5362. 0.310     1661.        5358.</span></a>
+<a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co">#&gt; 10 2019-05-01 02:20:00 5361. 5362. 5355. 5355. 0.356     1908.        5360.</span></a>
+<a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co">#&gt; # … with 26,151 more rows, and 7 more variables: zigzag_trend &lt;fct&gt;,</span></a>
 <a class="sourceLine" id="cb3-25" data-line-number="25"><span class="co">#&gt; #   zigzag_swing &lt;fct&gt;, bbands_dn &lt;dbl&gt;, bbands_ma &lt;dbl&gt;, bbands_up &lt;dbl&gt;,</span></a>
 <a class="sourceLine" id="cb3-26" data-line-number="26"><span class="co">#&gt; #   bbands_pctb &lt;dbl&gt;, ma_close_value &lt;dbl&gt;</span></a></code></pre></div>
 <p>This example recipe would be very helpful for preparing data for further analysis. For example, here is a quick visualization:</p>
@@ -215,6 +215,7 @@
 <a href="https://bagasbgy.com">R. Dimas Bagas Herlambang</a> <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
+
 
       <div class="dev-status">
 <h2>Dev status</h2>

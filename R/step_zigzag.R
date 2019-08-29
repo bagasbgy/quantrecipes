@@ -14,12 +14,16 @@
 #'  are given, it will represent the `"high"`, and `"low"` prices, respectively.
 #'  Otherwise, if only one column name is given, it will treated
 #'  as `"close"` price.
-#' @param change in development
-#' @param percent in development
-#' @param retrace in development
+#' @param change A `numeric` vector of length one, to specify the minimum price
+#'  change to be considered as the change from peak or trough.
+#' @param percent A `logical` to specify whether the `change` argument should
+#'  be interpreted as percentage change (`TRUE`) or absolute change (`FALSE`)
+#' @param retrace A `logical` to specify whether the `change` argument should
+#'  be interpreted as a change from previous move, or from last peak/trough.
 #' @param state An option to specify whether to return
 #'  the current states of the ZigZag. Defaults to `FALSE`.
-#' @param span An option to specify the `swing` span. See details.
+#' @param span A `numeric` vector of length one to specify the `swing` span.
+#' Default to `c(0, 0)`; zero addition to backward and forward. See details.
 #' @param h A container for the names of `"high"`. Leave to `NULL`
 #'  as it will be populated by [prep()][recipes::prep.recipe] function.
 #' @param l A container for the names of `"low"`. Leave to `NULL`
@@ -34,7 +38,21 @@
 #'
 #' @details
 #'
-#'  in development
+#'  The output from this step are several new columns
+#'  which contains the extracted moving average features.
+#'
+#'  For basic output, this step will produces:
+#'
+#'  * `value`: the estimated ZigZag value
+#'
+#'  If `state` argument is `TRUE`, it will also produces:
+#'
+#'  * `trend`: current trend
+#'  * `swing`: swing points; either `"up"`, `"down"`, or `"hold"`
+#'
+#'  Note that the `"up"` and `"down"` are determined as
+#'  the first `trend` change; you can control its wide and position using
+#'  `span` arguments.
 #'
 #' @examples
 #'
@@ -297,5 +315,77 @@ get_zigzag <- function(x, change, percent, retrace, state, span) {
 
   # return the results
   results
+
+}
+
+# tidy and print interface ------------------------------------------------
+
+#' @rdname step_zigzag
+#'
+#' @param x A `step_zigzag` object.
+#' @param info Options for `tidy()` method; whether to return tidied
+#'  information for used `"terms"` or `"params"`
+#'
+#' @export
+
+tidy.step_zigzag <- function(x, info = "terms", ...) {
+
+  if (info == "terms") {
+
+    if (is_trained(x)) {
+
+      results <- tibble(
+        terms = c("h", "l", "c"),
+        value = c(x$h, x$l, x$c)
+      )
+
+    } else {
+
+      term_names <- sel2char(x$terms)
+
+      results <- tibble(
+        terms = c("h", "l", "c"),
+        value = na_chr
+      )
+
+    }
+
+  } else if (info == "params") {
+
+    results <- tibble(
+      change = x$change,
+      percent = x$percent,
+      retrace = x$retrace,
+      state = x$state,
+      span = list(x$span)
+    )
+
+  }
+
+  results$id <- x$id
+
+  results
+
+}
+
+#' @export
+
+print.step_zigzag <- function(x, width = max(20, options()$width - 29), ...) {
+
+  msg <- glue("Extract ZigZag ({toupper(x$type)}) features using: ")
+
+  cat(msg, sep = "")
+
+  if (x$type == "hlc") {
+
+    printer(c(x$h, x$l, x$c), x$terms, x$trained, width = width)
+
+  } else if (x$type == "c") {
+
+    printer(x$c, x$terms, x$trained, width = width)
+
+  }
+
+  invisible(x)
 
 }
