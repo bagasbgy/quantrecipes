@@ -2,17 +2,18 @@
 % Please edit documentation in R/step_bbands.R
 \name{step_bbands}
 \alias{step_bbands}
-\alias{bbands_threshold}
+\alias{bbands_thresholds}
 \alias{tidy.step_bbands}
 \title{Extract Bollinger Bands features}
 \usage{
 step_bbands(recipe, ..., ma_fun = TTR::SMA, n = 20, sd_mult = 2,
   weights = NULL, ma_options = list(), state = FALSE,
-  previous = TRUE, threshold = bbands_threshold(), prefix = "bbands",
-  h = NULL, l = NULL, c = NULL, type = NULL, role = "predictor",
-  trained = FALSE, skip = FALSE, id = rand_id("bbands"))
+  previous = TRUE, thresholds = bbands_thresholds(),
+  prefix = "bbands", h = NULL, l = NULL, c = NULL, type = NULL,
+  role = "predictor", trained = FALSE, skip = FALSE,
+  id = rand_id("bbands"))
 
-bbands_threshold(high = 1, medhigh = 0.75, medlow = 0.25, low = 0)
+bbands_thresholds(high = 1, medhigh = 0.75, medlow = 0.25, low = 0)
 
 \method{tidy}{step_bbands}(x, info = "terms", ...)
 }
@@ -43,17 +44,17 @@ See details for more information.}
 to \code{ma_fun} function.}
 
 \item{state}{An option to specify whether to return
-the current states of the Bollinger Bands. Defaults to \code{TRUE}.}
+the current states of the Bollinger Bands. Defaults to \code{FALSE}.}
 
 \item{previous}{An option to specify whether to return
 the summary of previous states. Defaults to \code{TRUE} and
 only works if \code{state = TRUE}.}
 
-\item{threshold}{A \code{list} of threshold that would be used
+\item{thresholds}{A \code{list} of threshold that would be used
 as state determination. See details for further information.}
 
 \item{prefix}{A \code{character} vector of length one that would be used
-as a prefix to the created bollinger bands columns. Defaults to \code{"bbands"}.}
+as a prefix to the created columns.}
 
 \item{h}{A container for the names of \code{"high"}. Leave to \code{NULL}
 as it will be populated by \link[recipes:prep.recipe]{prep()} function.}
@@ -70,7 +71,7 @@ populated by \link[recipes:prep.recipe]{prep()} function.}
 
 \item{role}{For model terms created by this step, what analysis
 role should they be assigned? By default, the function assumes
-that the created bollinger bands columns will be used
+that the created columns will be used
 as \code{"predictors"} in a model.}
 
 \item{trained}{A logical to indicate if the necessary informations for
@@ -91,7 +92,7 @@ as it may affect the computations for subsequent operations}
 
 \item{medlow}{Threshold for \code{"medlow"} state; see details sections.}
 
-\item{low}{Threshold for \code{"low"} state; see detailssections.}
+\item{low}{Threshold for \code{"low"} state; see details sections.}
 
 \item{x}{A \code{step_bbands} object.}
 
@@ -104,8 +105,8 @@ added to the sequence of existing steps (if any).
 }
 \description{
 \code{step_bbands} creates a \strong{specification} of a recipe
-step that will extract \strong{Bollinger Bands} features
-from an asset price historical data.
+step that will extract \strong{Bollinger Bands} features from an asset price
+historical data.
 }
 \details{
 The output from this step are several new columns
@@ -116,17 +117,17 @@ For basic output, this step will produces:
 \item \code{dn}: lower band
 \item \code{ma}: moving average
 \item \code{up}: upper band
-\item \code{pctb}: calculated %B
+\item \code{pctb}: calculated percentage B
 }
 
 If \code{state} argument is \code{TRUE}, it will also produces:
 \itemize{
-\item \code{state}: current %B state
+\item \code{state}: current percentage B state
 \item \code{state_count}: cumulative count in current state
 }
 
 These states are determined using four different threshold, which listed
-in \code{threshold} arguments. These are the default threshold values:
+in \code{thresholds} arguments. These are the default threshold values:
 \itemize{
 \item \code{high}: \code{pctb > high} (the default is \code{high = 1})
 \item \code{medhigh}: \code{high > pctb > medhigh} (the default is \code{medhigh = 0.75})
@@ -136,7 +137,7 @@ in \code{threshold} arguments. These are the default threshold values:
 
 Note: that the rest values would be categorized as \code{"medium"}.
 
-Those default values are produced from \code{bbands_threshold()}
+Those default values are produced from \code{bbands_thresholds()}
 helper functions; any modification to the threshold could be made through
 this helper functions. See examples for some demonstrations.
 
@@ -173,7 +174,7 @@ juice(rec)
 
 # modify the threshold
 rec <- recipe(. ~ ., data = btcusdt) \%>\%
-  step_bbands(high, low, close, state = TRUE, threshold = bbands_threshold(
+  step_bbands(high, low, close, state = TRUE, thresholds = bbands_thresholds(
     high = 0.9, medhigh = 0.65, medlow = 0.35, low = 0.1
   )) \%>\%
   step_naomit(all_predictors()) \%>\%

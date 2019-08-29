@@ -3,8 +3,8 @@
 #' @title Extract moving average features
 #'
 #' @description `step_ma` creates a **specification** of a recipe
-#'  step that will extract **moving average** features
-#'  from an asset price historical data.
+#'  step that will extract **moving average** features from an asset price
+#'  historical data.
 #'
 #' @param recipe A recipe object. The step will be added to the
 #'  sequence of operations for this recipe.
@@ -23,16 +23,16 @@
 #'  to `ma_fun` function.
 #' @param state An option to specify whether to return
 #'  the current states of the calculated moving averages. See details for
-#'  more informations. Defaults to `TRUE`.
+#'  more informations. Defaults to `FALSE`.
 #' @param ratio Whether to return the moving average `spread` as ratio or
 #'  absolute difference. See details for more informations. Defaults to `TRUE`.
 #' @param prices A container for asd. Leave to `NULL`
 #'  as it will be populated by [prep()][recipes::prep.recipe] function.
 #' @param prefix A `character` vector of length one that would be used
-#'  as a prefix to the created moving average columns. Defaults to `"ma"`.
+#'  as a prefix to the created columns.
 #' @param role For model terms created by this step, what analysis
 #'  role should they be assigned? By default, the function assumes
-#'  that the created moving average columns will be used
+#'  that the created columns will be used
 #'  as `"predictors"` in a model.
 #' @param trained A logical to indicate if the necessary informations for
 #'  preprocessing have been estimated.

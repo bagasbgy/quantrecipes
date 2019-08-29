@@ -36,20 +36,20 @@ to \code{ma_fun} function.}
 
 \item{state}{An option to specify whether to return
 the current states of the calculated moving averages. See details for
-more informations. Defaults to \code{TRUE}.}
+more informations. Defaults to \code{FALSE}.}
 
 \item{ratio}{Whether to return the moving average \code{spread} as ratio or
 absolute difference. See details for more informations. Defaults to \code{TRUE}.}
 
 \item{prefix}{A \code{character} vector of length one that would be used
-as a prefix to the created moving average columns. Defaults to \code{"ma"}.}
+as a prefix to the created columns.}
 
 \item{prices}{A container for asd. Leave to \code{NULL}
 as it will be populated by \link[recipes:prep.recipe]{prep()} function.}
 
 \item{role}{For model terms created by this step, what analysis
 role should they be assigned? By default, the function assumes
-that the created moving average columns will be used
+that the created columns will be used
 as \code{"predictors"} in a model.}
 
 \item{trained}{A logical to indicate if the necessary informations for
@@ -75,8 +75,8 @@ added to the sequence of existing steps (if any).
 }
 \description{
 \code{step_ma} creates a \strong{specification} of a recipe
-step that will extract \strong{moving average} features
-from an asset price historical data.
+step that will extract \strong{moving average} features from an asset price
+historical data.
 }
 \details{
 The output from this step are several new columns

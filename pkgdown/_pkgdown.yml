@@ -5,12 +5,15 @@ authors:
 development:
   mode: auto
 reference:
-  - title: Trend-Based
+  - title: Trend-based indicators
     contents:
       - step_ma
-  - title: Volatility-Based
+  - title: Volatility-based indicators
     contents:
       - step_bbands
+  - title: Visualization tools
+    contents:
+      - step_zigzag
   - title: Example Datasets
     contents:
       - btcusdt

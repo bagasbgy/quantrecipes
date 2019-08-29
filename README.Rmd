@@ -39,11 +39,12 @@ Let's start by importing the library:
 library(quantrecipes)
 ```
 
-Here's a quick example for setting-up a recipe to produce Bollinger Bands and moving average:
+Here's a quick example for setting-up a recipe to produce ZigZag, Bollinger Bands, and moving average:
 
 ```{r}
 # an example recipe
 rec <- recipe(. ~ ., data = btcusdt) %>% 
+  step_zigzag(close, change = 0.5, state = TRUE, span = c(1, -1)) %>% 
   step_bbands(high, low, close) %>% 
   step_ma(close) %>% 
   step_naomit(all_predictors()) %>% 
@@ -51,4 +52,68 @@ rec <- recipe(. ~ ., data = btcusdt) %>%
 
 # quick check
 juice(rec)
+```
+
+This example recipe would be very helpful for preparing data for further analysis. For example, here is a quick visualization:
+
+```{r}
+# import libs
+library(ggplot2)
+
+# quick visualization
+data_viz <- juice(rec) %>% 
+  tail(12 * 24)
+
+data_highlight <- data_viz %>% 
+  drop_na() %>% 
+  filter(zigzag_swing != "hold")
+
+ggplot(data_viz, aes(x = datetime, y = close)) +
+  geom_ribbon(aes(ymin = bbands_dn, ymax = bbands_up), alpha = 0.15) +
+  geom_line(aes(y = ma_close_value), colour = "darkblue", linetype = "dashed", alpha = 0.5) +
+  geom_line() +
+  geom_point(data = data_highlight, aes(colour = zigzag_swing)) +
+  scale_colour_manual(values = c("up" = "blue", "down" = "red")) +
+  guides(colour = FALSE) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal()
+```
+
+Since we have the recipes object, this approach also very helpful to preprocess new data:
+
+```{r}
+# import libs
+library(rucoin)
+
+# get new data
+btcusdt_new <- get_kucoin_prices(
+  symbols = "BTC/USDT",
+  from = "2019-08-18",
+  to = "2019-08-19",
+  frequency = "5 minutes"
+)
+
+# get preprocess result for new data
+bake(rec, btcusdt_new)
+```
+
+Thus, make a reproducible analysis for new data easier too:
+
+```{r}
+# quick visualization
+data_viz <- bake(rec, btcusdt_new)
+
+data_highlight <- data_viz %>% 
+  drop_na() %>% 
+  filter(zigzag_swing != "hold")
+
+ggplot(data_viz, aes(x = datetime, y = close)) +
+  geom_ribbon(aes(ymin = bbands_dn, ymax = bbands_up), alpha = 0.15) +
+  geom_line(aes(y = ma_close_value), colour = "darkblue", linetype = "dashed", alpha = 0.5) +
+  geom_line() +
+  geom_point(data = data_highlight, aes(colour = zigzag_swing)) +
+  scale_colour_manual(values = c("up" = "blue", "down" = "red")) +
+  guides(colour = FALSE) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal()
 ```

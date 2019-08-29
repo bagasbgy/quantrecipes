@@ -35,8 +35,8 @@
 <meta property="og:title" content="Extract moving average features — step_ma" />
 
 <meta property="og:description" content="step_ma creates a specification of a recipe
-step that will extract moving average features
-from an asset price historical data." />
+step that will extract moving average features from an asset price
+historical data." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,8 +111,8 @@ from an asset price historical data." />
     <div class="ref-description">
     
     <p><code>step_ma</code> creates a <strong>specification</strong> of a recipe
-step that will extract <strong>moving average</strong> features
-from an asset price historical data.</p>
+step that will extract <strong>moving average</strong> features from an asset price
+historical data.</p>
     
     </div>
 
@@ -164,7 +164,7 @@ to <code>ma_fun</code> function.</p></td>
       <th>state</th>
       <td><p>An option to specify whether to return
 the current states of the calculated moving averages. See details for
-more informations. Defaults to <code>TRUE</code>.</p></td>
+more informations. Defaults to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>ratio</th>
@@ -174,7 +174,7 @@ absolute difference. See details for more informations. Defaults to <code>TRUE</
     <tr>
       <th>prefix</th>
       <td><p>A <code>character</code> vector of length one that would be used
-as a prefix to the created moving average columns. Defaults to <code>"ma"</code>.</p></td>
+as a prefix to the created columns.</p></td>
     </tr>
     <tr>
       <th>prices</th>
@@ -185,7 +185,7 @@ as it will be populated by <a href='https://www.rdocumentation.org/packages/reci
       <th>role</th>
       <td><p>For model terms created by this step, what analysis
 role should they be assigned? By default, the function assumes
-that the created moving average columns will be used
+that the created columns will be used
 as <code>"predictors"</code> in a model.</p></td>
     </tr>
     <tr>

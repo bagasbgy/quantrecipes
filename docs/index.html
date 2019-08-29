@@ -89,31 +89,104 @@
 <p>Let’s start by importing the library:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># import libs</span></a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(quantrecipes)</a></code></pre></div>
-<p>Here’s a quick example for setting-up a recipe to produce Bollinger Bands and moving average:</p>
+<p>Here’s a quick example for setting-up a recipe to produce ZigZag, Bollinger Bands, and moving average:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># an example recipe</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">rec &lt;-<span class="st"> </span><span class="kw">recipe</span>(. <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> btcusdt) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/step_bbands.html">step_bbands</a></span>(high, low, close) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/step_ma.html">step_ma</a></span>(close) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw">step_naomit</span>(<span class="kw">all_predictors</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="st">  </span><span class="kw">prep</span>()</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co"># quick check</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="kw">juice</span>(rec)</a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt; # A tibble: 26,172 x 12</span></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt;    datetime             open  high   low close volume turnover bbands_dn</span></a>
-<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt;    &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt;  1 2019-05-01 01:35:00 5340. 5340. 5331. 5331. 0.510     2722.     5322.</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt;  2 2019-05-01 01:40:00 5338. 5339. 5333  5333  0.402     2146.     5324.</span></a>
-<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt;  3 2019-05-01 01:45:00 5335. 5337. 5333  5336. 0.819     4368.     5326.</span></a>
-<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;  4 2019-05-01 01:50:00 5336. 5337. 5336. 5337. 0.0199     106.     5329.</span></a>
-<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt;  5 2019-05-01 01:55:00 5338. 5340. 5336. 5340. 1.39      7437.     5330.</span></a>
-<a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt;  6 2019-05-01 02:00:00 5342. 5344. 5342  5344. 1.03      5504.     5330.</span></a>
-<a class="sourceLine" id="cb3-19" data-line-number="19"><span class="co">#&gt;  7 2019-05-01 02:05:00 5344. 5352. 5344  5352. 1.26      6716.     5329.</span></a>
-<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt;  8 2019-05-01 02:10:00 5353  5355. 5348. 5348. 0.191     1020.     5328.</span></a>
-<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt;  9 2019-05-01 02:15:00 5349. 5369. 5348. 5362. 0.310     1661.     5326.</span></a>
-<a class="sourceLine" id="cb3-22" data-line-number="22"><span class="co">#&gt; 10 2019-05-01 02:20:00 5361. 5362. 5355. 5355. 0.356     1908.     5325.</span></a>
-<a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co">#&gt; # … with 26,162 more rows, and 4 more variables: bbands_ma &lt;dbl&gt;,</span></a>
-<a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co">#&gt; #   bbands_up &lt;dbl&gt;, bbands_pctb &lt;dbl&gt;, ma_close_value &lt;dbl&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/step_zigzag.html">step_zigzag</a></span>(close, <span class="dt">change =</span> <span class="fl">0.5</span>, <span class="dt">state =</span> <span class="ot">TRUE</span>, <span class="dt">span =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">-1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/step_bbands.html">step_bbands</a></span>(high, low, close) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/step_ma.html">step_ma</a></span>(close) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="st">  </span><span class="kw">step_naomit</span>(<span class="kw">all_predictors</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="st">  </span><span class="kw">prep</span>()</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co"># quick check</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="kw">juice</span>(rec)</a>
+<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt; # A tibble: 26,155 x 15</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt;    datetime             open  high   low close volume turnover zigzag_value</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt;    &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt;  1 2019-05-01 01:35:00 5340. 5340. 5331. 5331. 0.510     2722.        5348.</span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt;  2 2019-05-01 01:40:00 5338. 5339. 5333  5333  0.402     2146.        5349.</span></a>
+<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;  3 2019-05-01 01:45:00 5335. 5337. 5333  5336. 0.819     4368.        5351.</span></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt;  4 2019-05-01 01:50:00 5336. 5337. 5336. 5337. 0.0199     106.        5352.</span></a>
+<a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt;  5 2019-05-01 01:55:00 5338. 5340. 5336. 5340. 1.39      7437.        5354.</span></a>
+<a class="sourceLine" id="cb3-19" data-line-number="19"><span class="co">#&gt;  6 2019-05-01 02:00:00 5342. 5344. 5342  5344. 1.03      5504.        5355.</span></a>
+<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt;  7 2019-05-01 02:05:00 5344. 5352. 5344  5352. 1.26      6716.        5356.</span></a>
+<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt;  8 2019-05-01 02:10:00 5353  5355. 5348. 5348. 0.191     1020.        5358.</span></a>
+<a class="sourceLine" id="cb3-22" data-line-number="22"><span class="co">#&gt;  9 2019-05-01 02:15:00 5349. 5369. 5348. 5362. 0.310     1661.        5359.</span></a>
+<a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co">#&gt; 10 2019-05-01 02:20:00 5361. 5362. 5355. 5355. 0.356     1908.        5361.</span></a>
+<a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co">#&gt; # … with 26,145 more rows, and 7 more variables: zigzag_trend &lt;fct&gt;,</span></a>
+<a class="sourceLine" id="cb3-25" data-line-number="25"><span class="co">#&gt; #   zigzag_swing &lt;fct&gt;, bbands_dn &lt;dbl&gt;, bbands_ma &lt;dbl&gt;, bbands_up &lt;dbl&gt;,</span></a>
+<a class="sourceLine" id="cb3-26" data-line-number="26"><span class="co">#&gt; #   bbands_pctb &lt;dbl&gt;, ma_close_value &lt;dbl&gt;</span></a></code></pre></div>
+<p>This example recipe would be very helpful for preparing data for further analysis. For example, here is a quick visualization:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># import libs</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co"># quick visualization</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">data_viz &lt;-<span class="st"> </span><span class="kw">juice</span>(rec) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">tail</a></span>(<span class="dv">12</span> <span class="op">*</span><span class="st"> </span><span class="dv">24</span>)</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">data_highlight &lt;-<span class="st"> </span>data_viz <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="st">  </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/filter">filter</a></span>(zigzag_swing <span class="op">!=</span><span class="st"> "hold"</span>)</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(data_viz, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> datetime, <span class="dt">y =</span> close)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_ribbon</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">ymin =</span> bbands_dn, <span class="dt">ymax =</span> bbands_up), <span class="dt">alpha =</span> <span class="fl">0.15</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> ma_close_value), <span class="dt">colour =</span> <span class="st">"darkblue"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(<span class="dt">data =</span> data_highlight, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">colour =</span> zigzag_swing)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_colour_manual</a></span>(<span class="dt">values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"up"</span> =<span class="st"> "blue"</span>, <span class="st">"down"</span> =<span class="st"> "red"</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-18" data-line-number="18"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span>(<span class="dt">colour =</span> <span class="ot">FALSE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-19" data-line-number="19"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span>()</a></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p>Since we have the recipes object, this approach also very helpful to preprocess new data:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># import libs</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(rucoin)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co"># get new data</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">btcusdt_new &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/rucoin/topics/get_kucoin_prices">get_kucoin_prices</a></span>(</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">  <span class="dt">symbols =</span> <span class="st">"BTC/USDT"</span>,</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">  <span class="dt">from =</span> <span class="st">"2019-08-18"</span>,</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">  <span class="dt">to =</span> <span class="st">"2019-08-19"</span>,</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">  <span class="dt">frequency =</span> <span class="st">"5 minutes"</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">)</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co"># get preprocess result for new data</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="kw">bake</span>(rec, btcusdt_new)</a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co">#&gt; # A tibble: 264 x 15</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co">#&gt;    datetime              open   high    low  close volume turnover</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="co">#&gt;    &lt;dttm&gt;               &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="co">#&gt;  1 2019-08-18 01:35:00 10173. 10198. 10173. 10191.   42.6  434072.</span></a>
+<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co">#&gt;  2 2019-08-18 01:40:00 10192. 10195. 10171. 10184.   64.1  652153.</span></a>
+<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co">#&gt;  3 2019-08-18 01:45:00 10184. 10184. 10164. 10182.   53.5  544848.</span></a>
+<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co">#&gt;  4 2019-08-18 01:50:00 10182. 10193  10180  10190.   26.2  266446.</span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt;  5 2019-08-18 01:55:00 10190. 10192. 10177. 10183.   50.9  518042.</span></a>
+<a class="sourceLine" id="cb5-22" data-line-number="22"><span class="co">#&gt;  6 2019-08-18 02:00:00 10182  10203. 10178. 10197.   46.7  475847.</span></a>
+<a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co">#&gt;  7 2019-08-18 02:05:00 10193. 10205. 10192. 10197.   25.5  260335.</span></a>
+<a class="sourceLine" id="cb5-24" data-line-number="24"><span class="co">#&gt;  8 2019-08-18 02:10:00 10197. 10204. 10197. 10203.   23.8  242407.</span></a>
+<a class="sourceLine" id="cb5-25" data-line-number="25"><span class="co">#&gt;  9 2019-08-18 02:15:00 10204. 10204. 10180. 10182.   38.8  395315.</span></a>
+<a class="sourceLine" id="cb5-26" data-line-number="26"><span class="co">#&gt; 10 2019-08-18 02:20:00 10182. 10188. 10180. 10180.   21.7  220920.</span></a>
+<a class="sourceLine" id="cb5-27" data-line-number="27"><span class="co">#&gt; # … with 254 more rows, and 8 more variables: zigzag_value &lt;dbl&gt;,</span></a>
+<a class="sourceLine" id="cb5-28" data-line-number="28"><span class="co">#&gt; #   zigzag_trend &lt;fct&gt;, zigzag_swing &lt;fct&gt;, bbands_dn &lt;dbl&gt;,</span></a>
+<a class="sourceLine" id="cb5-29" data-line-number="29"><span class="co">#&gt; #   bbands_ma &lt;dbl&gt;, bbands_up &lt;dbl&gt;, bbands_pctb &lt;dbl&gt;,</span></a>
+<a class="sourceLine" id="cb5-30" data-line-number="30"><span class="co">#&gt; #   ma_close_value &lt;dbl&gt;</span></a></code></pre></div>
+<p>Thus, make a reproducible analysis for new data easier too:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># quick visualization</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">data_viz &lt;-<span class="st"> </span><span class="kw">bake</span>(rec, btcusdt_new)</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">data_highlight &lt;-<span class="st"> </span>data_viz <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/filter">filter</a></span>(zigzag_swing <span class="op">!=</span><span class="st"> "hold"</span>)</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(data_viz, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> datetime, <span class="dt">y =</span> close)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_ribbon</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">ymin =</span> bbands_dn, <span class="dt">ymax =</span> bbands_up), <span class="dt">alpha =</span> <span class="fl">0.15</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> ma_close_value), <span class="dt">colour =</span> <span class="st">"darkblue"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(<span class="dt">data =</span> data_highlight, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">colour =</span> zigzag_swing)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_colour_manual</a></span>(<span class="dt">values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"up"</span> =<span class="st"> "blue"</span>, <span class="st">"down"</span> =<span class="st"> "red"</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span>(<span class="dt">colour =</span> <span class="ot">FALSE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span>()</a></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 </div>
   </div>

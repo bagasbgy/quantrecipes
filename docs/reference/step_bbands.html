@@ -35,8 +35,8 @@
 <meta property="og:title" content="Extract Bollinger Bands features — step_bbands" />
 
 <meta property="og:description" content="step_bbands creates a specification of a recipe
-step that will extract Bollinger Bands features
-from an asset price historical data." />
+step that will extract Bollinger Bands features from an asset price
+historical data." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,18 +111,19 @@ from an asset price historical data." />
     <div class="ref-description">
     
     <p><code>step_bbands</code> creates a <strong>specification</strong> of a recipe
-step that will extract <strong>Bollinger Bands</strong> features
-from an asset price historical data.</p>
+step that will extract <strong>Bollinger Bands</strong> features from an asset price
+historical data.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>step_bbands</span>(<span class='no'>recipe</span>, <span class='no'>...</span>, <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>SMA</a></span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>sd_mult</span> <span class='kw'>=</span> <span class='fl'>2</span>,
   <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ma_options</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>previous</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fu'>bbands_threshold</span>(), <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"bbands"</span>,
-  <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>c</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>,
-  <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"bbands"</span>))
+  <span class='kw'>previous</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thresholds</span> <span class='kw'>=</span> <span class='fu'>bbands_thresholds</span>(),
+  <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"bbands"</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>c</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>, <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"bbands"</span>))
 
-<span class='fu'>bbands_threshold</span>(<span class='kw'>high</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>medhigh</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>medlow</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>low</span> <span class='kw'>=</span> <span class='fl'>0</span>)
+<span class='fu'>bbands_thresholds</span>(<span class='kw'>high</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>medhigh</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>medlow</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>low</span> <span class='kw'>=</span> <span class='fl'>0</span>)
 
 <span class='co'># S3 method for step_bbands</span>
 <span class='fu'>tidy</span>(<span class='no'>x</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"terms"</span>, <span class='no'>...</span>)</pre>
@@ -172,7 +173,7 @@ to <code>ma_fun</code> function.</p></td>
     <tr>
       <th>state</th>
       <td><p>An option to specify whether to return
-the current states of the Bollinger Bands. Defaults to <code>TRUE</code>.</p></td>
+the current states of the Bollinger Bands. Defaults to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>previous</th>
@@ -181,14 +182,14 @@ the summary of previous states. Defaults to <code>TRUE</code> and
 only works if <code>state = TRUE</code>.</p></td>
     </tr>
     <tr>
-      <th>threshold</th>
+      <th>thresholds</th>
       <td><p>A <code>list</code> of threshold that would be used
 as state determination. See details for further information.</p></td>
     </tr>
     <tr>
       <th>prefix</th>
       <td><p>A <code>character</code> vector of length one that would be used
-as a prefix to the created bollinger bands columns. Defaults to <code>"bbands"</code>.</p></td>
+as a prefix to the created columns.</p></td>
     </tr>
     <tr>
       <th>h</th>
@@ -215,7 +216,7 @@ populated by <a href='https://www.rdocumentation.org/packages/recipes/topics/pre
       <th>role</th>
       <td><p>For model terms created by this step, what analysis
 role should they be assigned? By default, the function assumes
-that the created bollinger bands columns will be used
+that the created columns will be used
 as <code>"predictors"</code> in a model.</p></td>
     </tr>
     <tr>
@@ -250,7 +251,7 @@ as it may affect the computations for subsequent operations</p></td>
     </tr>
     <tr>
       <th>low</th>
-      <td><p>Threshold for <code>"low"</code> state; see detailssections.</p></td>
+      <td><p>Threshold for <code>"low"</code> state; see details sections.</p></td>
     </tr>
     <tr>
       <th>x</th>
@@ -276,21 +277,21 @@ which contains the extracted Bollinger Bands features.</p>
 <li><p><code>dn</code>: lower band</p></li>
 <li><p><code>ma</code>: moving average</p></li>
 <li><p><code>up</code>: upper band</p></li>
-<li><p><code>pctb</code>: calculated <!-- %B --></p></li>
+<li><p><code>pctb</code>: calculated percentage B</p></li>
 </ul>
     <p>If <code>state</code> argument is <code>TRUE</code>, it will also produces:</p><ul>
-<li><p><code>state</code>: current <!-- %B state --></p></li>
+<li><p><code>state</code>: current percentage B state</p></li>
 <li><p><code>state_count</code>: cumulative count in current state</p></li>
 </ul>
     <p>These states are determined using four different threshold, which listed
-in <code>threshold</code> arguments. These are the default threshold values:</p><ul>
+in <code>thresholds</code> arguments. These are the default threshold values:</p><ul>
 <li><p><code>high</code>: <code>pctb &gt; high</code> (the default is <code>high = 1</code>)</p></li>
 <li><p><code>medhigh</code>: <code>high &gt; pctb &gt; medhigh</code> (the default is <code>medhigh = 0.75</code>)</p></li>
 <li><p><code>medlow</code>: <code>low &lt; pctb &lt; medlow</code> (the default is <code>medlow = 0.25</code>)</p></li>
 <li><p><code>low</code>: <code>pctb &lt; low</code> (the default is <code>low = 0</code>)</p></li>
 </ul>
     <p>Note: that the rest values would be categorized as <code>"medium"</code>.</p>
-<p>Those default values are produced from <code>bbands_threshold()</code>
+<p>Those default values are produced from <code>bbands_thresholds()</code>
 helper functions; any modification to the threshold could be made through
 this helper functions. See examples for some demonstrations.</p>
 <p>Additionally, if <code>previous</code> argument is <code>TRUE</code>, it will also provides
@@ -354,7 +355,7 @@ some summary regarding previous Bollinger Bands states:</p><ul>
 #&gt; #   bbands_prev_medium </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span style='color: #949494;'>, bbands_prev_break </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span></div><div class='input'>
 <span class='co'># modify the threshold</span>
 <span class='no'>rec</span> <span class='kw'>&lt;-</span> <span class='fu'>recipe</span>(<span class='no'>.</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>btcusdt</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'>step_bbands</span>(<span class='no'>high</span>, <span class='no'>low</span>, <span class='no'>close</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fu'>bbands_threshold</span>(
+  <span class='fu'>step_bbands</span>(<span class='no'>high</span>, <span class='no'>low</span>, <span class='no'>close</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thresholds</span> <span class='kw'>=</span> <span class='fu'>bbands_thresholds</span>(
     <span class='kw'>high</span> <span class='kw'>=</span> <span class='fl'>0.9</span>, <span class='kw'>medhigh</span> <span class='kw'>=</span> <span class='fl'>0.65</span>, <span class='kw'>medlow</span> <span class='kw'>=</span> <span class='fl'>0.35</span>, <span class='kw'>low</span> <span class='kw'>=</span> <span class='fl'>0.1</span>
   )) <span class='kw'>%&gt;%</span>
   <span class='fu'>step_naomit</span>(<span class='fu'>all_predictors</span>()) <span class='kw'>%&gt;%</span>
