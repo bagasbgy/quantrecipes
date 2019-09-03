@@ -10,9 +10,18 @@
 #'
 #' @param recipe A recipe object. The step will be added to the
 #'  sequence of operations for this recipe.
-#' @param prices in development.
-#' @param fee in development.
-#' @param mult in development.
+#' @param prices A quoted column name which will be used as historical
+#'  price data.
+#' @param fee A `numeric` vector pf length one, which will be used
+#'  as fee for each trade action.
+#' @param mult A `logical` vector to specify whether to return the cumulative
+#'  returns as cash multiplier or just the return. Defaults to `FALSE`
+#' @param buy A `character` vector of length one which indicates buy action(s)
+#'  inside the selected `actions` columns. Default to `"buy"`.
+#' @param sell A `character` vector of length one which indicates sell action(s)
+#'  inside the selected `actions` columns. Default to `"sell"`.
+#' @param hold A `character` vector of length one which indicates hold action(s)
+#'  inside the selected `actions` columns. Default to `"hold"`.
 #' @param actions A container for selected actions columns. Leave to `NULL`
 #'  as it will be populated by [prep()][recipes::prep.recipe] function.
 #'
@@ -20,7 +29,8 @@
 #'
 #' @details
 #'
-#'  in development
+#'  This step will return the calculated (log) cumulative returns, either just
+#'  as a return, or as a cash multiplier for each selected columns.
 #'
 #' @examples
 #'
@@ -39,6 +49,7 @@
 #' @export
 
 step_cumret <- function(recipe, ..., prices, fee = 0.001, mult = FALSE,
+                        buy = "buy", sell = "sell", hold = "hold",
                         prefix = "cumret", actions = NULL, role = "predictor",
                         trained = FALSE, skip = FALSE, id = rand_id("cumret")) {
 
@@ -51,6 +62,9 @@ step_cumret <- function(recipe, ..., prices, fee = 0.001, mult = FALSE,
     prices = prices,
     fee = fee,
     mult = mult,
+    buy = buy,
+    sell = sell,
+    hold = hold,
     prefix = prefix,
     actions = actions,
     role = role,
@@ -61,8 +75,8 @@ step_cumret <- function(recipe, ..., prices, fee = 0.001, mult = FALSE,
 
 }
 
-step_cumret_new <- function(terms, prices, fee, mult, prefix, actions,
-                            role, trained, skip, id) {
+step_cumret_new <- function(terms, prices, fee, mult, buy, sell, hold,
+                            prefix, actions, role, trained, skip, id) {
 
   # set-up step meta
   step("cumret",
@@ -70,6 +84,9 @@ step_cumret_new <- function(terms, prices, fee, mult, prefix, actions,
     prices = prices,
     fee = fee,
     mult = mult,
+    buy = buy,
+    sell = sell,
+    hold = hold,
     prefix = prefix,
     actions = actions,
     role = role,
@@ -98,6 +115,9 @@ prep.step_cumret <- function(x, training, info = NULL, ...) {
     prices = x$prices,
     fee = x$fee,
     mult = x$mult,
+    buy = x$buy,
+    sell = x$sell,
+    hold = x$hold,
     prefix = x$prefix,
     actions = x$actions,
     role = x$role,
@@ -128,7 +148,10 @@ bake.step_cumret <- function(object, new_data, ...) {
       actions = action,
       prices = price,
       fee = object$fee,
-      mult = object$mult
+      mult = object$mult,
+      buy = object$buy,
+      sell = object$sell,
+      hold = object$hold
     )
 
     # execute input-output function
@@ -157,20 +180,20 @@ bake.step_cumret <- function(object, new_data, ...) {
 # input-output resolver ---------------------------------------------------
 
 # cumulative return extractor
-get_cumret <- function(actions, prices, fee, mult) {
+get_cumret <- function(actions, prices, fee, mult, buy, sell, hold) {
 
   # combine all data
-  results <- tibble(actions = actions, prices = prices)
+  results <- tibble(actions = as.character(actions), prices = prices)
 
   # readjust actions
   results <- results %>%
-    mutate(actions = ifelse(.data$actions == "hold", NA, .data$actions)) %>%
+    mutate(actions = ifelse(.data$actions == hold, NA, .data$actions)) %>%
     fill(.data$actions)
 
   if (is.na(first(results$actions))) {
 
     results[1, ] <- results[1, ] %>%
-      mutate(actions = "buy")
+      mutate(actions = buy)
 
     results <- results %>%
       fill(.data$actions)
@@ -190,7 +213,22 @@ get_cumret <- function(actions, prices, fee, mult) {
 
   # calculate cumulative returns
   results <- results %>%
-    mutate(results = ifelse(.data$actions == "buy", 1, -1) * .data$returns) %>%
+    mutate(results = case_when(
+      .data$actions == buy ~ 1,
+      .data$actions == sell ~ -1
+    ))
+
+  if (any(is.na(results$actions))) {
+
+    stop(glue(
+      "There are some unrecognized actions. Please check provided actions: ",
+      "{paste(unique(results$actions), collapse = ', ')}"
+    ))
+
+  }
+
+  results <- results %>%
+    mutate(results = .data$results * .data$returns) %>%
     mutate(cumret = (1 + results) * (1 - .data$fees)) %>%
     mutate(cumret = cumprod(.data$cumret))
 
@@ -242,7 +280,10 @@ tidy.step_cumret <- function(x, info = "terms", ...) {
     results <- tibble(
       prices = x$prices,
       fee = x$fee,
-      mult = x$mult
+      mult = x$mult,
+      buy = x$buy,
+      sell = x$sell,
+      hold = x$hold
     )
 
   }
@@ -265,3 +306,4 @@ print.step_cumret <- function(x, width = max(20, options()$width - 29), ...) {
   invisible(x)
 
 }
+

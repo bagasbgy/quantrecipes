@@ -41,12 +41,31 @@
 # actions <- juice(rec) %>%
 #   mutate(portfolio = case_when(
 #     zigzag_swing == "up" ~ "buy",
-#     zigzag_swing == "down" ~ "sell",
-#     TRUE ~ "hold"
-#   )) %>%
+#     zigzag_swing == "down" ~ "sell"
+#   ))
+#
+# first_action <- actions %>%
+#   drop_na() %>%
+#   pull(portfolio) %>%
+#   first()
+#
+# if (first_action == "buy") {
+#
+#   first_notna <- min(which(!is.na(actions$portfolio)))
+#
+#   actions[first_notna, "portfolio"] <- "hold"
+#
+# }
+#
+# actions <- actions %>%
 #   mutate(portfolio = c("buy", .data$portfolio[-1])) %>%
+#   mutate(portfolio = ifelse(is.na(.data$portfolio), "hold", .data$portfolio))
+#
+# actions <- actions %>%
 #   mutate(benchmark = "hold") %>%
-#   mutate(benchmark = c("buy", .data$benchmark[-1])) %>%
+#   mutate(benchmark = c("buy", .data$benchmark[-1]))
+#
+# actions <- actions %>%
 #   select(datetime, close, benchmark, portfolio)
 #
 # # save the data

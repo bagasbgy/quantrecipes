@@ -117,8 +117,9 @@ actions and historical prices.</p>
     </div>
 
     <pre class="usage"><span class='fu'>step_cumret</span>(<span class='no'>recipe</span>, <span class='no'>...</span>, <span class='no'>prices</span>, <span class='kw'>fee</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='kw'>mult</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"cumret"</span>, <span class='kw'>actions</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>,
-  <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"cumret"</span>))
+  <span class='kw'>buy</span> <span class='kw'>=</span> <span class='st'>"buy"</span>, <span class='kw'>sell</span> <span class='kw'>=</span> <span class='st'>"sell"</span>, <span class='kw'>hold</span> <span class='kw'>=</span> <span class='st'>"hold"</span>, <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"cumret"</span>,
+  <span class='kw'>actions</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>, <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>rand_id</span>(<span class='st'>"cumret"</span>))
 
 <span class='co'># S3 method for step_cumret</span>
 <span class='fu'>tidy</span>(<span class='no'>x</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"terms"</span>, <span class='no'>...</span>)</pre>
@@ -139,15 +140,33 @@ variables are affected by the step. See
     </tr>
     <tr>
       <th>prices</th>
-      <td><p>in development.</p></td>
+      <td><p>A quoted column name which will be used as historical
+price data.</p></td>
     </tr>
     <tr>
       <th>fee</th>
-      <td><p>in development.</p></td>
+      <td><p>A <code>numeric</code> vector pf length one, which will be used
+as fee for each trade action.</p></td>
     </tr>
     <tr>
       <th>mult</th>
-      <td><p>in development.</p></td>
+      <td><p>A <code>logical</code> vector to specify whether to return the cumulative
+returns as cash multiplier or just the return. Defaults to <code>FALSE</code></p></td>
+    </tr>
+    <tr>
+      <th>buy</th>
+      <td><p>A <code>character</code> vector of length one which indicates buy action(s)
+inside the selected <code>actions</code> columns. Default to <code>"buy"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>sell</th>
+      <td><p>A <code>character</code> vector of length one which indicates sell action(s)
+inside the selected <code>actions</code> columns. Default to <code>"sell"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>hold</th>
+      <td><p>A <code>character</code> vector of length one which indicates hold action(s)
+inside the selected <code>actions</code> columns. Default to <code>"hold"</code>.</p></td>
     </tr>
     <tr>
       <th>prefix</th>
@@ -201,7 +220,8 @@ information for used <code>"terms"</code> or <code>"params"</code></p></td>
 added to the sequence of existing steps (if any).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>in development</p>
+    <p>This step will return the calculated (log) cumulative returns, either just
+as a return, or as a cash multiplier for each selected columns.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -218,16 +238,16 @@ added to the sequence of existing steps (if any).</p>
 <span class='fu'>juice</span>(<span class='no'>rec</span>)</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 863 x 6</span><span>
 #&gt;    datetime            close benchmark portfolio cumret_benchmark
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 2019-07-27 </span><span style='color: #949494;'>23:55:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>486. buy       buy                0.002</span><span style='text-decoration: underline;'>05</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 2019-07-28 </span><span style='color: #949494;'>00:00:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>457. hold      hold               0.008</span><span style='text-decoration: underline;'>45</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 2019-07-28 </span><span style='color: #949494;'>00:05:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>396. hold      buy                0.006</span><span style='text-decoration: underline;'>80</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 2019-07-28 </span><span style='color: #949494;'>00:10:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>412. hold      hold               0.003</span><span style='text-decoration: underline;'>55</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 2019-07-28 </span><span style='color: #949494;'>00:15:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>442. hold      hold               0.005</span><span style='text-decoration: underline;'>23</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 2019-07-28 </span><span style='color: #949494;'>00:20:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>426. hold      hold               0.003</span><span style='text-decoration: underline;'>28</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 2019-07-28 </span><span style='color: #949494;'>00:25:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>445. hold      hold               0.002</span><span style='text-decoration: underline;'>76</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 2019-07-28 </span><span style='color: #949494;'>00:30:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>450. hold      hold               0.002</span><span style='text-decoration: underline;'>53</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 2019-07-28 </span><span style='color: #949494;'>00:35:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>452. hold      hold               0.005</span><span style='text-decoration: underline;'>28</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 2019-07-28 </span><span style='color: #949494;'>00:40:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>426. hold      hold               0.005</span><span style='text-decoration: underline;'>11</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 2019-07-27 </span><span style='color: #949494;'>23:55:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>486. buy       buy               -</span><span style='color: #BB0000;'>0.004</span><span style='color: #BB0000;text-decoration: underline;'>05</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 2019-07-28 </span><span style='color: #949494;'>00:00:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>457. hold      hold              -</span><span style='color: #BB0000;'>0.010</span><span style='color: #BB0000;text-decoration: underline;'>4</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 2019-07-28 </span><span style='color: #949494;'>00:05:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>396. hold      hold              -</span><span style='color: #BB0000;'>0.008</span><span style='color: #BB0000;text-decoration: underline;'>79</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 2019-07-28 </span><span style='color: #949494;'>00:10:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>412. hold      hold              -</span><span style='color: #BB0000;'>0.005</span><span style='color: #BB0000;text-decoration: underline;'>59</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 2019-07-28 </span><span style='color: #949494;'>00:15:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>442. hold      hold              -</span><span style='color: #BB0000;'>0.007</span><span style='color: #BB0000;text-decoration: underline;'>26</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 2019-07-28 </span><span style='color: #949494;'>00:20:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>426. hold      hold              -</span><span style='color: #BB0000;'>0.005</span><span style='color: #BB0000;text-decoration: underline;'>33</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 2019-07-28 </span><span style='color: #949494;'>00:25:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>445. hold      hold              -</span><span style='color: #BB0000;'>0.004</span><span style='color: #BB0000;text-decoration: underline;'>82</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 2019-07-28 </span><span style='color: #949494;'>00:30:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>450. hold      hold              -</span><span style='color: #BB0000;'>0.004</span><span style='color: #BB0000;text-decoration: underline;'>58</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 2019-07-28 </span><span style='color: #949494;'>00:35:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>452. hold      hold              -</span><span style='color: #BB0000;'>0.007</span><span style='color: #BB0000;text-decoration: underline;'>32</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 2019-07-28 </span><span style='color: #949494;'>00:40:00</span><span> </span><span style='text-decoration: underline;'>9</span><span>426. hold      hold              -</span><span style='color: #BB0000;'>0.007</span><span style='color: #BB0000;text-decoration: underline;'>15</span><span>
 #&gt; </span><span style='color: #949494;'># … with 853 more rows, and 1 more variable: cumret_portfolio </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
 </div></span></pre>
   </div>

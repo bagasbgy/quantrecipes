@@ -6,8 +6,9 @@
 \title{Calculate cumulative returns based on specified actions}
 \usage{
 step_cumret(recipe, ..., prices, fee = 0.001, mult = FALSE,
-  prefix = "cumret", actions = NULL, role = "predictor",
-  trained = FALSE, skip = FALSE, id = rand_id("cumret"))
+  buy = "buy", sell = "sell", hold = "hold", prefix = "cumret",
+  actions = NULL, role = "predictor", trained = FALSE,
+  skip = FALSE, id = rand_id("cumret"))
 
 \method{tidy}{step_cumret}(x, info = "terms", ...)
 }
@@ -19,11 +20,23 @@ sequence of operations for this recipe.}
 variables are affected by the step. See
 \link[recipes:selections]{selections (from recipes package)} for more details.}
 
-\item{prices}{in development.}
+\item{prices}{A quoted column name which will be used as historical
+price data.}
 
-\item{fee}{in development.}
+\item{fee}{A \code{numeric} vector pf length one, which will be used
+as fee for each trade action.}
 
-\item{mult}{in development.}
+\item{mult}{A \code{logical} vector to specify whether to return the cumulative
+returns as cash multiplier or just the return. Defaults to \code{FALSE}}
+
+\item{buy}{A \code{character} vector of length one which indicates buy action(s)
+inside the selected \code{actions} columns. Default to \code{"buy"}.}
+
+\item{sell}{A \code{character} vector of length one which indicates sell action(s)
+inside the selected \code{actions} columns. Default to \code{"sell"}.}
+
+\item{hold}{A \code{character} vector of length one which indicates hold action(s)
+inside the selected \code{actions} columns. Default to \code{"hold"}.}
 
 \item{prefix}{A \code{character} vector of length one that would be used
 as a prefix to the created columns.}
@@ -63,7 +76,8 @@ step that will calculate \strong{cumulative returns} from a set of strategy
 actions and historical prices.
 }
 \details{
-in development
+This step will return the calculated (log) cumulative returns, either just
+as a return, or as a cash multiplier for each selected columns.
 }
 \examples{
 

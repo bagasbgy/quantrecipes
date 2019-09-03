@@ -117,3 +117,39 @@ ggplot(data_viz, aes(x = datetime, y = close)) +
   labs(x = NULL, y = NULL) +
   theme_minimal()
 ```
+
+Beside for market descriptive or predictive analysis, this package also provide some tools for performance analytics:
+
+```{r}
+# an example recipe
+rec <- recipe(. ~ ., data = actions) %>% 
+  step_cumret(benchmark, portfolio, prices = "close") %>%
+  step_naomit(all_predictors()) %>%
+  prep()
+
+# quick check
+juice(rec)
+```
+
+Which, again, could also very helpful to build the related visualizations:
+
+```{r}
+# another helper libs
+library(stringr)
+
+# quick visualization
+data_viz <- juice(rec) %>% 
+  select(datetime, cumret_benchmark, cumret_portfolio) %>% 
+  gather(key, value, -datetime) %>% 
+  mutate(key =
+    str_replace_all(key, "cumret_", "") %>% 
+      str_to_title() %>% 
+      factor(c("Portfolio", "Benchmark"))
+  )
+
+ggplot(data_viz, aes(x = datetime, y = value)) +
+  geom_line() +
+  facet_wrap(vars(key), ncol = 1, scales = "free") +
+  labs(title = "Portfolio vs Benchmark Return", x = NULL, y = NULL) +
+  theme_minimal()
+```

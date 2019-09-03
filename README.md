@@ -145,3 +145,57 @@ ggplot(data_viz, aes(x = datetime, y = close)) +
 ```
 
 <img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" />
+
+Beside for market descriptive or predictive analysis, this package also
+provide some tools for performance analytics:
+
+``` r
+# an example recipe
+rec <- recipe(. ~ ., data = actions) %>% 
+  step_cumret(benchmark, portfolio, prices = "close") %>%
+  step_naomit(all_predictors()) %>%
+  prep()
+
+# quick check
+juice(rec)
+#> # A tibble: 863 x 6
+#>    datetime            close benchmark portfolio cumret_benchmark
+#>    <dttm>              <dbl> <fct>     <fct>                <dbl>
+#>  1 2019-07-27 23:55:00 9486. buy       buy               -0.00405
+#>  2 2019-07-28 00:00:00 9457. hold      hold              -0.0104 
+#>  3 2019-07-28 00:05:00 9396. hold      hold              -0.00879
+#>  4 2019-07-28 00:10:00 9412. hold      hold              -0.00559
+#>  5 2019-07-28 00:15:00 9442. hold      hold              -0.00726
+#>  6 2019-07-28 00:20:00 9426. hold      hold              -0.00533
+#>  7 2019-07-28 00:25:00 9445. hold      hold              -0.00482
+#>  8 2019-07-28 00:30:00 9450. hold      hold              -0.00458
+#>  9 2019-07-28 00:35:00 9452. hold      hold              -0.00732
+#> 10 2019-07-28 00:40:00 9426. hold      hold              -0.00715
+#> # … with 853 more rows, and 1 more variable: cumret_portfolio <dbl>
+```
+
+Which, again, could also very helpful to build the related
+visualizations:
+
+``` r
+# another helper libs
+library(stringr)
+
+# quick visualization
+data_viz <- juice(rec) %>% 
+  select(datetime, cumret_benchmark, cumret_portfolio) %>% 
+  gather(key, value, -datetime) %>% 
+  mutate(key =
+    str_replace_all(key, "cumret_", "") %>% 
+      str_to_title() %>% 
+      factor(c("Portfolio", "Benchmark"))
+  )
+
+ggplot(data_viz, aes(x = datetime, y = value)) +
+  geom_line() +
+  facet_wrap(vars(key), ncol = 1, scales = "free") +
+  labs(title = "Portfolio vs Benchmark Return", x = NULL, y = NULL) +
+  theme_minimal()
+```
+
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" />
