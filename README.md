@@ -85,7 +85,7 @@ ggplot(data_viz, aes(x = datetime, y = close)) +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 Since we have the recipes object, this approach also very helpful to
 preprocess new data:
@@ -144,7 +144,7 @@ ggplot(data_viz, aes(x = datetime, y = close)) +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 Beside for market descriptive or predictive analysis, this package also
 provide some tools for performance analytics:
@@ -198,4 +198,4 @@ ggplot(data_viz, aes(x = datetime, y = value)) +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-9-1.png" style="display: block; margin: auto;" />

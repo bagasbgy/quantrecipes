@@ -1,9 +1,24 @@
-destination: docs
+url: https://quantrecipes.bagasbgy.com
+
 authors:
   R. Dimas Bagas Herlambang:
     href: https://bagasbgy.com
-development:
-  mode: auto
+
+template:
+  package: bgypkg
+
+home:
+  strip_header: true
+
+navbar:
+  type: default
+  left:
+  - text: Reference
+    href: reference/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/bagasbgy/quantrecipes
+
 reference:
   - title: Trend-based indicators
     contents:
@@ -21,3 +36,8 @@ reference:
     contents:
       - btcusdt
       - actions
+
+destination: docs
+
+development:
+  mode: auto

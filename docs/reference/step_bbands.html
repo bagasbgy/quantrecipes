@@ -11,29 +11,26 @@
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
 <!-- Bootstrap -->
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link href="../bgypkg.css" rel="stylesheet">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script>
-
-
-
-  <link href="../extra.css" rel="stylesheet">
-  
+<link href="../bgypkg-2.css" rel="stylesheet">
 
 <meta property="og:title" content="Extract Bollinger Bands features — step_bbands" />
 <meta property="og:description" content="step_bbands creates a specification of a recipe
@@ -53,7 +50,6 @@ historical data." />
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-
   </head>
 
   <body>
@@ -68,25 +64,20 @@ historical data." />
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">quantrecipes</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
-      </span>
-    </div>
 
+      <div class="navbar-brand-container">
+        <a class="navbar-brand" href="../index.html">quantrecipes</a>
+        <div class="info">
+          <span class="partof">part of <a href="https://bagasbgy.com">bagasbgy's</a></span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
+        </div>
+      </div>
+    </div>
     <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/bagasbgy/quantrecipes">
     <span class="fa fa-github fa-lg"></span>
@@ -94,12 +85,12 @@ historical data." />
   </a>
 </li>
       </ul>
-      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -116,8 +107,8 @@ step that will extract <strong>Bollinger Bands</strong> features from an asset p
 historical data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>step_bbands</span>(<span class='no'>recipe</span>, <span class='no'>...</span>, <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>SMA</a></span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>sd_mult</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ma_options</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+    <pre class="usage"><span class='fu'>step_bbands</span>(<span class='no'>recipe</span>, <span class='no'>...</span>, <span class='kw'>ma_fun</span> <span class='kw'>=</span> <span class='kw pkg'>TTR</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/TTR/man/MovingAverages.html'>SMA</a></span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>sd_mult</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ma_options</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>previous</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thresholds</span> <span class='kw'>=</span> <span class='fu'>bbands_thresholds</span>(),
   <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>"bbands"</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>c</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>role</span> <span class='kw'>=</span> <span class='st'>"predictor"</span>, <span class='kw'>trained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -147,7 +138,7 @@ as <code>"close"</code> price.</p></td>
       <th>ma_fun</th>
       <td><p>A <code>function</code> to extract moving average, or a <code>character</code>
 vector of length one which specify a moving average function.
-Defaults to <a href='https://www.rdocumentation.org/packages/TTR/topics/MovingAverages'>TTR::SMA</a>.</p></td>
+Defaults to <a href='https://rdrr.io/pkg/TTR/man/MovingAverages.html'>TTR::SMA</a>.</p></td>
     </tr>
     <tr>
       <th>n</th>
@@ -194,23 +185,23 @@ as a prefix to the created columns.</p></td>
     <tr>
       <th>h</th>
       <td><p>A container for the names of <code>"high"</code>. Leave to <code>NULL</code>
-as it will be populated by <a href='https://www.rdocumentation.org/packages/recipes/topics/prep'>prep()</a> function.</p></td>
+as it will be populated by <a href='https://rdrr.io/pkg/recipes/man/prep.html'>prep()</a> function.</p></td>
     </tr>
     <tr>
       <th>l</th>
       <td><p>A container for the names of <code>"low"</code>. Leave to <code>NULL</code>
-as it will be populated by <a href='https://www.rdocumentation.org/packages/recipes/topics/prep'>prep()</a> function.</p></td>
+as it will be populated by <a href='https://rdrr.io/pkg/recipes/man/prep.html'>prep()</a> function.</p></td>
     </tr>
     <tr>
       <th>c</th>
       <td><p>A container for the names of <code>"close"</code>. Leave to <code>NULL</code>
-as it will be populated by <a href='https://www.rdocumentation.org/packages/recipes/topics/prep'>prep()</a> function.</p></td>
+as it will be populated by <a href='https://rdrr.io/pkg/recipes/man/prep.html'>prep()</a> function.</p></td>
     </tr>
     <tr>
       <th>type</th>
       <td><p>A container for the final series type that
 would be used (<code>"hlc"</code> or <code>"c"</code>). Leave to <code>NULL</code> as it will be
-populated by <a href='https://www.rdocumentation.org/packages/recipes/topics/prep'>prep()</a> function.</p></td>
+populated by <a href='https://rdrr.io/pkg/recipes/man/prep.html'>prep()</a> function.</p></td>
     </tr>
     <tr>
       <th>role</th>
@@ -227,8 +218,8 @@ preprocessing have been estimated.</p></td>
     <tr>
       <th>skip</th>
       <td><p>A logical. Should the step be skipped when the
-recipe is baked by <a href='https://www.rdocumentation.org/packages/recipes/topics/bake'>bake()</a>? While all operations are baked
-when <a href='https://www.rdocumentation.org/packages/recipes/topics/prep'>prep()</a> is run, some operations may not
+recipe is baked by <a href='https://rdrr.io/pkg/recipes/man/bake.html'>bake()</a>? While all operations are baked
+when <a href='https://rdrr.io/pkg/recipes/man/prep.html'>prep()</a> is run, some operations may not
 be able to be conducted on new data (e.g. processing
 the outcome variable(s)). Care should be taken when using <code>skip = TRUE</code>
 as it may affect the computations for subsequent operations</p></td>
@@ -278,18 +269,21 @@ which contains the extracted Bollinger Bands features.</p>
 <li><p><code>up</code>: upper band</p></li>
 <li><p><code>pctb</code>: calculated percentage B</p></li>
 </ul>
-    <p>If <code>state</code> argument is <code>TRUE</code>, it will also produces:</p><ul>
+
+<p>If <code>state</code> argument is <code>TRUE</code>, it will also produces:</p><ul>
 <li><p><code>state</code>: current percentage B state</p></li>
 <li><p><code>state_count</code>: cumulative count in current state</p></li>
 </ul>
-    <p>These states are determined using four different threshold, which listed
+
+<p>These states are determined using four different threshold, which listed
 in <code>thresholds</code> arguments. These are the default threshold values:</p><ul>
 <li><p><code>high</code>: <code>pctb &gt; high</code> (the default is <code>high = 1</code>)</p></li>
 <li><p><code>medhigh</code>: <code>high &gt; pctb &gt; medhigh</code> (the default is <code>medhigh = 0.75</code>)</p></li>
 <li><p><code>medlow</code>: <code>low &lt; pctb &lt; medlow</code> (the default is <code>medlow = 0.25</code>)</p></li>
 <li><p><code>low</code>: <code>pctb &lt; low</code> (the default is <code>low = 0</code>)</p></li>
 </ul>
-    <p>Note: that the rest values would be categorized as <code>"medium"</code>.</p>
+
+<p>Note: that the rest values would be categorized as <code>"medium"</code>.</p>
 <p>Those default values are produced from <code>bbands_thresholds()</code>
 helper functions; any modification to the threshold could be made through
 this helper functions. See examples for some demonstrations.</p>
@@ -300,10 +294,11 @@ some summary regarding previous Bollinger Bands states:</p><ul>
 <li><p><code>prev_break</code>: previous break-state (<code>"high"</code>, <code>"low"</code>)</p></li>
 </ul>
 
+
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># import libs</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>quantrecipes</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>quantrecipes</span>)
 
 <span class='co'># basic usage</span>
 <span class='no'>rec</span> <span class='kw'>&lt;-</span> <span class='fu'>recipe</span>(<span class='no'>.</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>btcusdt</span>) <span class='kw'>%&gt;%</span>
@@ -391,19 +386,26 @@ some summary regarding previous Bollinger Bands states:</p><ul>
   </div>
 </div>
 
+
       <footer>
-      <div class="copyright">
-  <p>Developed by <a href='https://bagasbgy.com'>R. Dimas Bagas Herlambang</a>.</p>
+      <div class="bgypkg">
+  <p>quantrecipes is a part of <strong>bagasbgy's packages</strong>. Learn more at <a href="https://bagasbgy.com">bagasbgy.com</a>.</p>
 </div>
 
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+<div class="author">
+  <p>
+    Developed by <a href='https://bagasbgy.com'>R. Dimas Bagas Herlambang</a>.
+    Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
+  </p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
