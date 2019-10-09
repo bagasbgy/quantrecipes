@@ -3,11 +3,8 @@ h1 {font-size: 40px;}
 h2 {font-size: 30px;}
 h3 {font-size: 23px;}
 
-.contents .page-header {
-  margin-top: 10px;
-}
+.contents .page-header {margin-top: 10px;}
 
-/* reduce h3 margin for proper nesting under h2 */
 .contents h3 {margin-top: -60px}
 
 .ref-arguments th {vertical-align: top;}
@@ -68,13 +65,16 @@ footer {
   display: flex;
   color: #666;
 }
+
 footer p {
   margin-bottom: 0;
 }
+
 footer .bgypkg {
   flex: 1;
   margin-right: 1em;
 }
+
 footer .author {
   flex: 1;
   text-align: right;
