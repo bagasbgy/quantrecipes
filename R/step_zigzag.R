@@ -311,6 +311,13 @@ get_zigzag <- function(x, change, percent, retrace, state, span) {
 
     }
 
+    # readjust all states to factor
+    results <- results %>%
+      mutate(
+        trend = factor(.data$trend, levels = c("up", "down")),
+        swing = factor(.data$swing, levels = c("hold", "up", "down"))
+      )
+
   }
 
   # return the results

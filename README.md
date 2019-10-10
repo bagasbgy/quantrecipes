@@ -7,6 +7,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
 status](https://travis-ci.org/bagasbgy/quantrecipes.svg?branch=master)](https://travis-ci.org/bagasbgy/quantrecipes)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/bagasbgy/quantrecipes?branch=master&svg=true)](https://ci.appveyor.com/project/bagasbgy/quantrecipes)
 <!-- badges: end -->
 
 ## Installation

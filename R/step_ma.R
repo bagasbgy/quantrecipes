@@ -348,6 +348,10 @@ get_ma <- function(price, ma_fun, n, weights, ma_options, state, ratio) {
     results <- results %>%
       mutate(state = ifelse(.data$spread > 0, "bullish", "bearish"))
 
+    # readjust all states to factor
+    results <- results %>%
+      mutate(state = factor(.data$state, levels = c("bullish", "bearish")))
+
   }
 
   # remove unnecessary cols

@@ -400,6 +400,15 @@ get_bbands <- function(x, ma_fun, n, sd_mult, weights, ma_options,
 
     }
 
+    # readjust all states to factor
+    results <- results %>%
+      mutate(
+        state = factor(.data$state, levels = c("medium", "high", "medhigh", "medlow", "low")),
+        prev_state = factor(.data$prev_state, levels = c("medium", "high", "medhigh", "medlow", "low")),
+        prev_medium = factor(.data$prev_medium, levels = c("medium", "medhigh", "medlow")),
+        prev_break = factor(.data$prev_break, levels = c("high", "low"))
+      )
+
   }
 
   # return the results
