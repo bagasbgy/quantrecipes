@@ -98,8 +98,8 @@ If \code{state} argument is \code{TRUE}, it will also produces:
 \item \code{swing}: swing points; either \code{"up"}, \code{"down"}, or \code{"hold"}
 }
 
-Note that the \code{"up"} and \code{"down"} are determined as
-the first \code{trend} change; you can control its wide and position using
+Note that the \code{"up"} and \code{"down"} are positioned at the time before
+the \code{trend} change; you can control its wide and position using
 \code{span} arguments.
 }
 \examples{

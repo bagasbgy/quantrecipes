@@ -23,7 +23,7 @@
 #' @param state An option to specify whether to return
 #'  the current states of the ZigZag. Defaults to `FALSE`.
 #' @param span A `numeric` vector of length one to specify the `swing` span.
-#' Default to `c(0, 0)`; zero addition to backward and forward. See details.
+#'  Default to `c(0, 0)`; zero addition to backward and forward. See details.
 #' @param h A container for the names of `"high"`. Leave to `NULL`
 #'  as it will be populated by [prep()][recipes::prep.recipe] function.
 #' @param l A container for the names of `"low"`. Leave to `NULL`
@@ -50,8 +50,8 @@
 #'  * `trend`: current trend
 #'  * `swing`: swing points; either `"up"`, `"down"`, or `"hold"`
 #'
-#'  Note that the `"up"` and `"down"` are determined as
-#'  the first `trend` change; you can control its wide and position using
+#'  Note that the `"up"` and `"down"` are positioned at the time before
+#'  the `trend` change; you can control its wide and position using
 #'  `span` arguments.
 #'
 #' @examples
@@ -256,12 +256,14 @@ get_zigzag <- function(x, change, percent, retrace, state, span) {
 
     # add swing according to first trend change
     results <- results %>%
-      mutate(swing = ifelse(.data$trend != lag(.data$trend), "swing", "hold"))
+      mutate(swing = ifelse(.data$trend != lead(.data$trend), "swing", "hold")) %>%
+      mutate(swing = c(.data$swing[-length(.data$swing)], "hold"))
+
 
     results <- results %>%
       mutate(swing = case_when(
-        .data$swing == "swing" & .data$trend == "up" ~ "up",
-        .data$swing == "swing" & .data$trend == "down" ~ "down",
+        .data$swing == "swing" & .data$trend == "up" ~ "down",
+        .data$swing == "swing" & .data$trend == "down" ~ "up",
         TRUE ~ .data$swing
       ))
 

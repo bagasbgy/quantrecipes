@@ -35,7 +35,7 @@ Bollinger Bands, and moving average:
 ``` r
 # an example recipe
 rec <- recipe(. ~ ., data = btcusdt) %>% 
-  step_zigzag(close, change = 0.3, state = TRUE, span = c(1, -1)) %>% 
+  step_zigzag(close, change = 0.3, state = TRUE) %>% 
   step_bbands(high, low, close) %>% 
   step_ma(close) %>% 
   step_naomit(all_predictors()) %>% 
@@ -43,7 +43,7 @@ rec <- recipe(. ~ ., data = btcusdt) %>%
 
 # quick check
 juice(rec)
-#> # A tibble: 26,161 x 15
+#> # A tibble: 26,162 x 15
 #>    datetime             open  high   low close volume turnover zigzag_value
 #>    <dttm>              <dbl> <dbl> <dbl> <dbl>  <dbl>    <dbl>        <dbl>
 #>  1 2019-05-01 01:35:00 5340. 5340. 5331. 5331. 0.510     2722.        5344.
@@ -56,7 +56,7 @@ juice(rec)
 #>  8 2019-05-01 02:10:00 5353  5355. 5348. 5348. 0.191     1020.        5357.
 #>  9 2019-05-01 02:15:00 5349. 5369. 5348. 5362. 0.310     1661.        5358.
 #> 10 2019-05-01 02:20:00 5361. 5362. 5355. 5355. 0.356     1908.        5360.
-#> # … with 26,151 more rows, and 7 more variables: zigzag_trend <fct>,
+#> # … with 26,152 more rows, and 7 more variables: zigzag_trend <fct>,
 #> #   zigzag_swing <fct>, bbands_dn <dbl>, bbands_ma <dbl>, bbands_up <dbl>,
 #> #   bbands_pctb <dbl>, ma_close_value <dbl>
 ```
@@ -106,7 +106,7 @@ btcusdt_new <- get_kucoin_prices(
 
 # get preprocess result for new data
 bake(rec, btcusdt_new)
-#> # A tibble: 264 x 15
+#> # A tibble: 265 x 15
 #>    datetime              open   high    low  close volume turnover
 #>    <dttm>               <dbl>  <dbl>  <dbl>  <dbl>  <dbl>    <dbl>
 #>  1 2019-08-18 01:35:00 10173. 10198. 10173. 10191.   42.6  434072.
@@ -119,7 +119,7 @@ bake(rec, btcusdt_new)
 #>  8 2019-08-18 02:10:00 10197. 10204. 10197. 10203.   23.8  242407.
 #>  9 2019-08-18 02:15:00 10204. 10204. 10180. 10182.   38.8  395315.
 #> 10 2019-08-18 02:20:00 10182. 10188. 10180. 10180.   21.7  220920.
-#> # … with 254 more rows, and 8 more variables: zigzag_value <dbl>,
+#> # … with 255 more rows, and 8 more variables: zigzag_value <dbl>,
 #> #   zigzag_trend <fct>, zigzag_swing <fct>, bbands_dn <dbl>,
 #> #   bbands_ma <dbl>, bbands_up <dbl>, bbands_pctb <dbl>,
 #> #   ma_close_value <dbl>
@@ -189,8 +189,7 @@ data_viz <- juice(rec) %>%
   gather(key, value, -datetime) %>% 
   mutate(key =
     str_replace_all(key, "cumret_", "") %>% 
-      str_to_title() %>% 
-      factor(c("Portfolio", "Benchmark"))
+      str_to_title()
   )
 
 ggplot(data_viz, aes(x = datetime, y = value)) +
